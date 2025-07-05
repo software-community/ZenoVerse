@@ -2,6 +2,7 @@
 import { accountContext } from "@/context/accountContext";
 import Navbar from "@/components/Navbar";
 import { useContext, useEffect, useState } from "react";
+import Landing from "@/components/Landing";
 
 export default function Home() {
   // Get wallet and contract state from context
@@ -16,7 +17,6 @@ export default function Home() {
       return;
     }
   }, []);
-
   // Auto-connect to previously connected wallet on page load
   useEffect(() => {
     const autoConnect = async () => {
@@ -60,7 +60,7 @@ export default function Home() {
   
   return (
     <>
-      <Navbar />
+      <Landing />
     </>
   );
 }

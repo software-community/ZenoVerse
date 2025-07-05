@@ -51,7 +51,7 @@ function ConnectWalletButton() {
     <div className="flex gap-2 items-center">
       {account ? (
         <>
-          <span className="font-mono bg-gray-100 px-3 py-1 rounded">
+          <span className="font-mono bg-[#979696] px-3 py-1 rounded">
             Connected to: {truncateAccount(account)}
           </span>
           <button
