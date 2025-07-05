@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 6, "column": 0}, "map": {"version":3,"sources":[],"names":[],"mappings":"","debugId":null}},
-    {"offset": {"line": 24, "column": 0}, "map": {"version":3,"sources":["file:///C:/Documents/Running%20Projects/ZenoVerse/web/app/page.jsx"],"sourcesContent":["import Image from \"next/image\";\r\n\r\nexport default function Home() {\r\n  return (\r\n    <>\r\n    <AccountProvider>\r\n      <Navbar />\r\n    </AccountProvider>\r\n    </>\r\n  );\r\n}\r\n"],"names":[],"mappings":";;;;AAAA;;;AAEe,SAAS;IACtB,qBACE;kBACA,cAAA,8OAAC;sBACC,cAAA,8OAAC;;;;;;;;;;;AAIP","debugId":null}}]
-}
