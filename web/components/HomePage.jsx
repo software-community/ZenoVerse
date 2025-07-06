@@ -88,14 +88,14 @@ function HomePage() {
         </div>
       </div>
 
-      <div className="flex flex-col items-center py-6 px-4 mt-6 w-full bg-[#1c1a44]">
+      <div className="flex flex-col items-center py-6 px-2 sm:px-4 mt-6 w-full bg-[#1c1a44]">
         <form
           className="flex flex-col items-center gap-4 w-full max-w-xl"
           id="image-upload-form"
         >
           <label
             htmlFor="myFile"
-            className="text-white bg-[#7407b8] px-11 py-5 rounded-full text-lg cursor-pointer shadow-lg border-none transition-all duration-300 mb-2 hover:bg-[#428cff] hover:scale-105"
+            className="text-white bg-[#7407b8] px-6 sm:px-11 py-4 sm:py-5 rounded-full text-base sm:text-lg cursor-pointer shadow-lg border-none transition-all duration-300 mb-2 hover:bg-[#428cff] hover:scale-105"
             style={{}}
           >
             Upload Constellation Image
@@ -111,7 +111,7 @@ function HomePage() {
 
           {previewSrc && (
             <>
-              <div className="w-[90%] max-w-[800px] h-[450px] bg-white/5 border border-white/15 rounded-2xl backdrop-blur-lg shadow-2xl flex items-center justify-center overflow-hidden relative transition-all duration-300 animate-fadeIn">
+              <div className="w-full sm:w-[90%] max-w-[800px] h-[220px] sm:h-[450px] bg-white/5 border border-white/15 rounded-2xl backdrop-blur-lg shadow-2xl flex items-center justify-center overflow-hidden relative transition-all duration-300 animate-fadeIn">
                 <img
                   id="image-preview"
                   ref={previewRef}
@@ -123,7 +123,7 @@ function HomePage() {
               <input
                 type="submit"
                 value="Submit"
-                className="mt-4 px-8 py-3 border-2 border-[#7407b8] rounded-full bg-gradient-to-r from-[#7407b8] to-[#428cff] text-white text-lg tracking-wider shadow-[0_0_20px_#7407b8,0_0_6px_#fff2] transition-all duration-300 cursor-pointer hover:-translate-y-0.5 hover:from-[#428cff] hover:to-[#7407b8]"
+                className="mt-4 px-6 sm:px-8 py-2 sm:py-3 border-2 border-[#7407b8] rounded-full bg-gradient-to-r from-[#7407b8] to-[#428cff] text-white text-base sm:text-lg tracking-wider shadow-[0_0_20px_#7407b8,0_0_6px_#fff2] transition-all duration-300 cursor-pointer hover:-translate-y-0.5 hover:from-[#428cff] hover:to-[#7407b8]"
               />
             </>
           )}
@@ -134,7 +134,7 @@ function HomePage() {
         <h1 className="text-2xl md:text-3xl font-bold text-white mb-4 text-center">
           Other SoftCom Projects
         </h1>
-        <div className="gap-8 md:gap-10 flex flex-row flex-wrap justify-center items-stretch w-full max-w-7xl mx-auto">
+        <div className="gap-6 md:gap-10 flex flex-col sm:flex-row flex-wrap justify-center items-stretch w-full max-w-7xl mx-auto px-2">
           {otherProjects.map((project, idx) => (
             <ProjectCard
               key={project.id || idx}
