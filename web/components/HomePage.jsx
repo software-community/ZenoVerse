@@ -96,7 +96,6 @@ function HomePage() {
           <label
             htmlFor="myFile"
             className="text-white bg-[#7407b8] px-6 sm:px-11 py-4 sm:py-5 rounded-full text-base sm:text-lg cursor-pointer shadow-lg border-none transition-all duration-300 mb-2 hover:bg-[#428cff] hover:scale-105"
-            style={{}}
           >
             Upload Constellation Image
           </label>
@@ -109,24 +108,27 @@ function HomePage() {
             className="hidden"
           />
 
-          {previewSrc && (
-            <>
-              <div className="w-full sm:w-[90%] max-w-[800px] h-[220px] sm:h-[450px] bg-white/5 border border-white/15 rounded-2xl backdrop-blur-lg shadow-2xl flex items-center justify-center overflow-hidden relative transition-all duration-300 animate-fadeIn">
-                <img
-                  id="image-preview"
-                  ref={previewRef}
-                  src={previewSrc}
-                  alt="Image Preview"
-                  className="w-full h-full object-cover block opacity-100 rounded-2xl transition-opacity duration-500"
-                />
-              </div>
-              <input
-                type="submit"
-                value="Submit"
-                className="mt-4 px-6 sm:px-8 py-2 sm:py-3 border-2 border-[#7407b8] rounded-full bg-gradient-to-r from-[#7407b8] to-[#428cff] text-white text-base sm:text-lg tracking-wider shadow-[0_0_20px_#7407b8,0_0_6px_#fff2] transition-all duration-300 cursor-pointer hover:-translate-y-0.5 hover:from-[#428cff] hover:to-[#7407b8]"
+          <div className="w-full sm:w-[100%] max-w-[1800px] aspect-[1.5/1] bg-white/5 border border-white/15 rounded-2xl backdrop-blur-lg shadow-2xl flex items-center justify-center overflow-hidden relative transition-all duration-300 animate-fadeIn">
+            {previewSrc ? (
+              <img
+                id="image-preview"
+                ref={previewRef}
+                src={previewSrc}
+                alt="Image Preview"
+                className="w-full h-full object-cover block opacity-100 rounded-2xl transition-opacity duration-500"
               />
-            </>
-          )}
+            ) : (
+              <span className="text-white/60 text-lg">
+                Image preview will appear here
+              </span>
+            )}
+          </div>
+
+          <input
+            type="submit"
+            value="Submit"
+            className="mt-4 px-6 sm:px-8 py-2 sm:py-3 border-2 border-[#7407b8] rounded-full bg-gradient-to-r from-[#7407b8] to-[#428cff] text-white text-base sm:text-lg tracking-wider shadow-[0_0_20px_#7407b8,0_0_6px_#fff2] transition-all duration-300 cursor-pointer hover:-translate-y-0.5 hover:from-[#428cff] hover:to-[#7407b8]"
+          />
         </form>
       </div>
 
