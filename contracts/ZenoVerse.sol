@@ -22,7 +22,19 @@ contract ZenoVerse is ERC721URIStorage {
     // To store the tokens owned by an address
     mapping(address => uint256[]) private _observationOwners;
 
+    // event ObservationMinted
+    event ObservationMinted(address indexed to, uint256 indexed tokenId, string tokenURI);
+
     // mintObservation()
+    function mintObservation(address to, string memory uri) public returns (uint256) {
+        _tokenIdCounter.increment();
+        uint256 tokenId = _tokenIdCounter.current();
+        _safeMint(to, tokenId);
+        _setTokenURI(tokenId, uri);
+        _observationOwners[to].push(tokenId);
+        emit ObservationMinted(to, tokenId, uri);
+        return tokenId;
+    }
 
     // getObservationMetadata(tokenId)
     function getObservationMetadata(uint256 tokenId) public view returns (string memory) {
@@ -49,5 +61,5 @@ contract ZenoVerse is ERC721URIStorage {
 
     // setTokenURI() 
 
-    // event ObservationMinted
+    // event ObservationMinted already emitted in mintObservation
 }
