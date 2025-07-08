@@ -23,10 +23,17 @@ contract ZenoVerse is ERC721URIStorage {
     mapping(address => uint256[]) private _observationOwners;
 
     // event ObservationMinted
-    event ObservationMinted(address indexed to, uint256 indexed tokenId, string tokenURI);
+    event ObservationMinted(
+        address indexed to,
+        uint256 indexed tokenId,
+        string tokenURI
+    );
 
     // mintObservation()
-    function mintObservation(address to, string memory uri) public returns (uint256) {
+    function mintObservation(
+        address to,
+        string memory uri
+    ) public returns (uint256) {
         _tokenIdCounter.increment();
         uint256 tokenId = _tokenIdCounter.current();
         _safeMint(to, tokenId);
@@ -37,29 +44,32 @@ contract ZenoVerse is ERC721URIStorage {
     }
 
     // getObservationMetadata(tokenId)
-    function getObservationMetadata(uint256 tokenId) public view returns (string memory) {
-        require(_exists(tokenId), "ZenoVerse: Metadata query for nonexistent token");
+    function getObservationMetadata(
+        uint256 tokenId
+    ) public view returns (string memory) {
+        require(
+            _exists(tokenId),
+            "ZenoVerse: Metadata query for nonexistent token"
+        );
         return tokenURI(tokenId);
     }
 
     // getAllTokensByOwner()
-    function getAllTokensByOwner(address owner) public view returns (uint256[] memory) {
-        uint256 balance = balanceOf(owner);
-        uint256[] memory tokens = new uint256[](balance);
-        uint256 index = 0;
-        uint256 tokenCount = _tokenIdCounter.current();
-                 
-        for (uint256 i = 1; i <= tokenCount; i++) {
-            if (_exists(i) && ownerOf(i) == owner) {
-                tokens[index] = i;
-                index++;
-            }
-        }
-        _observationOwners[owner] = tokens;
-        return tokens;
+    function getAllTokensByOwner(
+        address owner
+    ) public view returns (uint256[] memory) {
+        require(
+            owner != address(0),
+            "ZenoVerse: Owner cannot be the zero address"
+        );
+        require(
+            _observationOwners[owner].length > 0,
+            "ZenoVerse: No tokens found for this owner"
+        );
+        return _observationOwners[owner];
     }
 
-    // setTokenURI() 
+    // setTokenURI()
 
     // event ObservationMinted already emitted in mintObservation
 }
