@@ -10,6 +10,10 @@ contract ZenoVerse is ERC721URIStorage, Ownable {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIdCounter;
 
+    constructor() ERC721("ZenoVerse", "ZENOS") {
+        // Initialize the contract with a name and symbol
+    }
+
     // To store the tokens owned by an address
     mapping(address => uint256[]) private _ownedObservations;
 
