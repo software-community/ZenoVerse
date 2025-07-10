@@ -1,3 +1,6 @@
+const { expect } = require("chai");
+const { ethers } = require("hardhat");
+
 describe("ZenoVerse", function () {
     let ZenoVerse, zenoverse, owner, addr1, addr2;
 
