@@ -4,23 +4,14 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract ZenoVerse is ERC721URIStorage {
+contract ZenoVerse is ERC721URIStorage, Ownable {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIdCounter;
 
-    // mapping (uint256 => address) private _observationOwners;
-
-    // constructor() ERC721("ZenoVerse", "ZV") {
-    //     _observationOwners[1] = address(0x1234567890123456789012345678901234567890);
-    //     _observationOwners[2] = address(0x0987654321098765432109876543210987654321);
-    //     _observationOwners[3] = address(0x1122334455667788990011223344556677889900);
-    //     _observationOwners[4] = address(0x2233445566778899001122334455667788990011);
-    //     _observationOwners[5] = address(0x3344556677889900112233445566778899001122);
-    // }
-
     // To store the tokens owned by an address
-    mapping(address => uint256[]) private _observationOwners;
+    mapping(address => uint256[]) private _ownedObservations;
 
     // event ObservationMinted
     event ObservationMinted(
@@ -33,12 +24,12 @@ contract ZenoVerse is ERC721URIStorage {
     function mintObservation(
         address to,
         string memory uri
-    ) public returns (uint256) {
+    ) public onlyOwner returns (uint256) {
         _tokenIdCounter.increment();
         uint256 tokenId = _tokenIdCounter.current();
         _safeMint(to, tokenId);
         _setTokenURI(tokenId, uri);
-        _observationOwners[to].push(tokenId);
+        _ownedObservations[to].push(tokenId);
         emit ObservationMinted(to, tokenId, uri);
         return tokenId;
     }
@@ -57,19 +48,34 @@ contract ZenoVerse is ERC721URIStorage {
     // getAllTokensByOwner()
     function getAllTokensByOwner(
         address owner
-    ) public view returns (uint256[] memory) {
+    ) external view returns (uint256[] memory) {
         require(
             owner != address(0),
             "ZenoVerse: Owner cannot be the zero address"
         );
-        require(
-            _observationOwners[owner].length > 0,
-            "ZenoVerse: No tokens found for this owner"
-        );
-        return _observationOwners[owner];
+        return _ownedObservations[owner];
     }
 
-    // setTokenURI()
+    /// @notice Burns a token in case of abuse or invalid data (admin only)
+    function burn(uint256 tokenId) public onlyOwner {
+        address owner = ownerOf(tokenId);
+        _burn(tokenId);
 
-    // event ObservationMinted already emitted in mintObservation
+        // Clean up from owner's token list
+        uint256[] storage tokens = _ownedObservations[owner];
+        for (uint256 i = 0; i < tokens.length; i++) {
+            if (tokens[i] == tokenId) {
+                tokens[i] = tokens[tokens.length - 1];
+                tokens.pop();
+                break;
+            }
+        }
+    }
+
+    /// @notice Allows the backend to update a token URI
+    function setTokenURI(uint256 tokenId, string memory newURI) public onlyOwner {
+        require(_exists(tokenId), "ZenoVerse: Token does not exist");
+        _setTokenURI(tokenId, newURI);
+    }
+
 }
