@@ -48,28 +48,23 @@ function ConnectWalletButton() {
   };
 
   return (
-    <div className="flex gap-2 items-center">
+    <>
       {account ? (
-        <>
-          <span className="font-mono bg-[#979696] px-3 py-1 rounded">
-            Connected to: {truncateAccount(account)}
-          </span>
-          <button
-            onClick={switchAccount}
-            className="bg-[#7407b8b9] hover:bg-[#7407b8] text-white px-4 py-1 rounded transition-colors"
-          > 
-            Switch
-          </button>
-        </>
+        <button
+          onClick={switchAccount}
+          className="ml-4 px-8 py-3 border-2 border-[#7407b8] rounded-full bg-[#428cff] text-white text-lg font-orbitron tracking-wider shadow-[0_0_20px_#428cff,0_0_6px_#fff2] transition-all duration-200 relative overflow-hidden hover:bg-[#2566c1] hover:border-white hover:shadow-[0_0_28px_#428cff,0_0_10px_#fff4]"
+        >
+          {truncateAccount(account)} (Switch)
+        </button>
       ) : (
         <button
           onClick={connectWallet}
-          className="bg-[#7407b8b9] hover:bg-[#7407b8] text-white px-4 py-1 rounded transition-colors"
+          className="ml-4 px-8 py-3 border-2 border-[#7407b8] rounded-full bg-[#428cff] text-white text-lg font-orbitron tracking-wider shadow-[0_0_20px_#428cff,0_0_6px_#fff2] transition-all duration-200 relative overflow-hidden hover:bg-[#2566c1] hover:border-white hover:shadow-[0_0_28px_#428cff,0_0_10px_#fff4]"
         >
           Connect Wallet
         </button>
       )}
-    </div>
+    </>
   );
 }
 
