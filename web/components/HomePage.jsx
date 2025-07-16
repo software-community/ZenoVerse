@@ -1,5 +1,6 @@
 import React, { useRef, useState } from "react";
 import ProjectCard from "./ProjectCard";
+import VerificationForm from "./verification";
 
 const otherProjects = [
   {
@@ -89,7 +90,7 @@ function HomePage() {
       </div>
 
       <div className="flex flex-col items-center py-6 px-2 sm:px-4 mt-6 w-full bg-[#1c1a44]">
-        <form
+        {/* <form
           className="flex flex-col items-center gap-4 w-full max-w-xl"
           id="image-upload-form"
         >
@@ -129,7 +130,8 @@ function HomePage() {
             value="Submit"
             className="mt-4 px-6 sm:px-8 py-2 sm:py-3 border-2 border-[#7407b8] rounded-full bg-gradient-to-r from-[#7407b8] to-[#428cff] text-white text-base sm:text-lg tracking-wider shadow-[0_0_20px_#7407b8,0_0_6px_#fff2] transition-all duration-300 cursor-pointer hover:-translate-y-0.5 hover:from-[#428cff] hover:to-[#7407b8]"
           />
-        </form>
+        </form> */}
+        <VerificationForm/>
       </div>
 
       <div className="flex flex-col items-center my-12">
