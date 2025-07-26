@@ -51,12 +51,15 @@ export async function POST(req) {
     await writeFile(tempFilePath, buffer);
 
     // 1. CNN Classification
-    const cnnPrediction = await classifyImage(tempFilePath);
+    const cnnPredictionData = await classifyImage(tempFilePath);
+    const cnnPrediction = cnnPredictionData.constellation;
+    const cnnConfidence = cnnPredictionData.confidenceScore;
     if (cnnPrediction !== userConstellation) {
       logEntry.reason = 'Constellation mismatch';
       await logValidation(logEntry);
       return NextResponse.json({ validated: false, reason: logEntry.reason }, { status: 400 });
     }
+    console.log("User Constellation:", userConstellation, "CNN Prediction:", cnnPrediction, "Confidence:", cnnConfidence);
 
     // 2. Visibility Check
     const visible = await isVisible({
@@ -71,6 +74,7 @@ export async function POST(req) {
       await logValidation(logEntry);
       return NextResponse.json({ validated: false, reason: logEntry.reason }, { status: 400 });
     }
+    console.log("Visibility Check:", visible);
 
     // 3. Duplicate Check
     const isDup = await isDuplicate(tempFilePath);
@@ -86,7 +90,7 @@ export async function POST(req) {
       latitude,
       longitude,
       timestamp,
-      confidence: 0.92, // placeholder
+      confidence: cnnConfidence,
       image: buffer.toString('base64'),
     };
 
@@ -96,7 +100,6 @@ export async function POST(req) {
     // 5. Mint NFT
     const tx = await mintObservation(userAddress, tokenURI);
     logEntry.txnHash = tx.hash;
-    logEntry.validated = true;
     logEntry.isValid = true;
     // logEntry.imageHash = 
 
