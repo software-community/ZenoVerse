@@ -22,16 +22,19 @@ export async function POST(req) {
   const userAddress = formData.get('userAddress');
 
   const logEntry = {
-    userAddress,
-    userConstellation,
-    latitude,
-    longitude,
-    timestamp,
-    validated: false,
-    reason: null,
-    tokenURI: null,
-    txHash: null,
-    createdAt: new Date(),
+    imageBase64: imageFile ? await imageFile.text() : null,
+    imageHash: '', // Placeholder, will be set after image processing
+    geolocation: {
+      lat: parseFloat(latitude),
+      lng: parseFloat(longitude),
+    },
+    time: new Date(timestamp).toISOString(),
+    constellation: userConstellation,
+    confidenceScore: 0.92, // Placeholder confidence score
+    isValid: false,
+    reason: '',
+    ipfsMetadataUri: '',
+    txnHash: '',
   };
 
   if (!imageFile || !userConstellation || !latitude || !longitude || !timestamp || !userAddress) {
@@ -88,12 +91,14 @@ export async function POST(req) {
     };
 
     const tokenURI = await uploadMetadataToIPFS(metadata);
-    logEntry.tokenURI = tokenURI;
+    logEntry.ipfsMetadataUri = tokenURI;
 
     // 5. Mint NFT
     const tx = await mintObservation(userAddress, tokenURI);
-    logEntry.txHash = tx.hash;
+    logEntry.txnHash = tx.hash;
     logEntry.validated = true;
+    logEntry.isValid = true;
+    // logEntry.imageHash = 
 
     await logValidation(logEntry);
 
