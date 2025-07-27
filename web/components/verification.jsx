@@ -6,11 +6,13 @@ const VerificationForm = () => {
   const [verificationResult, setVerificationResult] = useState(null);
   const [showFailurePopup, setShowFailurePopup] = useState(false);
   const [showLoadingPopup, setShowLoadingPopup] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleImageChange = async (e) => {
     if (e.target.files && e.target.files[0]) {
       setSelectedImage(e.target.files[0]);
       setVerificationResult(null);
+      setErrorMessage('');
 
       // Show loading popup and start verification
       setShowLoadingPopup(true);
@@ -24,28 +26,44 @@ const VerificationForm = () => {
     setIsVerifying(true);
 
     try {
-      // Simulate verification process
-      await new Promise(resolve => setTimeout(resolve, 3000));
+      console.log("🚀 Starting image verification:", imageFile.name);
+      
+      // Call the API directly (no need for separate API client)
+      const formData = new FormData();
+      formData.append('image', imageFile);
 
-      // Random success/failure (70% success rate)
-      const isSuccess = Math.random() > 0.3;
+      const response = await fetch('/api/validate', {
+        method: 'POST',
+        body: formData,
+      });
 
-      if (isSuccess) {
-        // Mock successful verification result
-        const mockResult = {
-          timestamp: new Date().toISOString(),
-          ipfsHash: 'QmMockHashForDemo123456789'
+      const result = await response.json();
+      console.log("✅ API Response:", result);
+
+      if (response.ok && result.validated) {
+        // Real successful verification result
+        const verificationData = {
+          timestamp: result.timestamp,
+          imageHash: result.imageHash,
+          mongoEnabled: result.mongoEnabled,
+          savedId: result.savedId,
+          ipfsHash: result.imageHash?.substring(0, 20) + "..." || "Generated hash",
+          // Future features
+          txHash: result.txHash,
+          tokenURI: result.tokenURI,
+          confidenceScore: result.confidenceScore,
+          warning: result.warning
         };
-        setVerificationResult(mockResult);
+        
+        setVerificationResult(verificationData);
         setShowLoadingPopup(false);
       } else {
-        // Show failure popup
-        setShowLoadingPopup(false);
-        setShowFailurePopup(true);
+        throw new Error(result.reason || result.error || 'Validation failed');
       }
 
     } catch (error) {
-      console.error('Verification error:', error);
+      console.error('❌ Verification error:', error);
+      setErrorMessage(error.message || 'Verification failed');
       setShowLoadingPopup(false);
       setShowFailurePopup(true);
     } finally {
@@ -57,6 +75,7 @@ const VerificationForm = () => {
     setShowFailurePopup(false);
     setSelectedImage(null);
     setVerificationResult(null);
+    setErrorMessage('');
   };
 
   return (
@@ -117,6 +136,7 @@ const VerificationForm = () => {
                 accept="image/*"
                 onChange={handleImageChange}
                 className="hidden"
+                disabled={isVerifying}
               />
             </label>
 
@@ -129,8 +149,39 @@ const VerificationForm = () => {
                   At: {new Date(verificationResult.timestamp).toLocaleString()}
                 </p>
                 <p className="text-white/40 text-xs mt-1">
-                  IPFS: {verificationResult.ipfsHash}
+                  Hash: {verificationResult.imageHash?.substring(0, 16)}...
                 </p>
+                
+                {/* Database Status */}
+                {verificationResult.mongoEnabled ? (
+                  <p className="text-green-400 text-xs mt-1">
+                    ✅ Stored in Database (ID: {verificationResult.savedId?.substring(0, 8)}...)
+                  </p>
+                ) : (
+                  <p className="text-yellow-400 text-xs mt-1">
+                    ⚠️ Database unavailable - using temporary storage
+                  </p>
+                )}
+
+                {/* Future Features Display */}
+                {verificationResult.txHash && (
+                  <p className="text-blue-400 text-xs mt-1">
+                    🌟 NFT Minted: {verificationResult.txHash.substring(0, 16)}...
+                  </p>
+                )}
+                
+                {verificationResult.confidenceScore && (
+                  <p className="text-purple-400 text-xs mt-1">
+                    🧠 AI Confidence: {(verificationResult.confidenceScore * 100).toFixed(1)}%
+                  </p>
+                )}
+
+                {verificationResult.warning && (
+                  <p className="text-orange-400 text-xs mt-1">
+                    ⚠️ {verificationResult.warning}
+                  </p>
+                )}
+
                 {/* Go to NFT Collection Button */}
                 <a
                   href="/nftcollection"
@@ -150,7 +201,8 @@ const VerificationForm = () => {
           <div className="bg-white/10 border border-white/10 rounded-2xl p-8 text-white text-center shadow-xl max-w-sm w-full">
             <div className="w-14 h-14 border-4 border-[#428cff] rounded-full animate-spin mx-auto mb-4 border-t-[#7407b8]" />
             <h3 className="text-xl font-semibold mb-2">Verifying...</h3>
-            <p className="text-white/60">Analyzing constellation pattern</p>
+            <p className="text-white/60">Checking for duplicate images</p>
+            <p className="text-white/40 text-xs mt-2">Connected to MongoDB database</p>
           </div>
         </div>
       )}
@@ -162,8 +214,13 @@ const VerificationForm = () => {
             <div className="text-5xl mb-3">❌</div>
             <h3 className="text-2xl font-bold mb-2">Verification Failed</h3>
             <p className="text-red-300 mb-4 text-sm">
-              Image couldn’t be verified. Try another.
+              {errorMessage || "Image couldn't be verified. Try another."}
             </p>
+            {errorMessage.includes('Duplicate') && (
+              <p className="text-yellow-300 text-xs mb-4">
+                This image has already been uploaded to the database.
+              </p>
+            )}
             <button
               onClick={handleFailureClose}
               className="px-6 py-2 rounded-full font-semibold bg-gradient-to-r from-red-500 to-pink-500 shadow-[0_0_15px_#ff5c8d] hover:from-red-600 hover:to-pink-600 transition"
