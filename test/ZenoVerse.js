@@ -102,4 +102,29 @@ describe("ZenoVerse", function () {
       zenoverse.connect(addr1).setTokenURI(1, hackerURI)
     ).to.be.revertedWith("Ownable: caller is not the owner");
   });
+
+  it("should update _ownedObservations when token is transferred", async () => {
+    // Mint token to addr1
+    const tx = await zenoverse.connect(owner).mintObservation(addr1.address, "ipfs://token");
+    await tx.wait();
+
+    let tokens = await zenoverse.getAllTokensByOwner(addr1.address);
+    const tokenId = tokens[0];
+
+    // Connect as addr1 and approve addr2 to receive the token
+    await zenoverse.connect(addr1).approve(addr2.address, tokenId);
+
+    // Transfer the token from addr1 to addr2
+    await zenoverse.connect(addr2).transferFrom(addr1.address, addr2.address, tokenId);
+
+    // Check that addr1's token list is empty
+    const tokensAddr1 = await zenoverse.getAllTokensByOwner(addr1.address);
+    expect(tokensAddr1.length).to.equal(0);
+
+    // Check that addr2 now owns the token
+    const tokensAddr2 = await zenoverse.getAllTokensByOwner(addr2.address);
+    expect(tokensAddr2.length).to.equal(1);
+    expect(tokensAddr2[0]).to.equal(tokenId);
+  });
+
 });

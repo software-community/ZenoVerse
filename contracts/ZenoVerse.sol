@@ -33,7 +33,6 @@ contract ZenoVerse is ERC721URIStorage, Ownable {
         uint256 tokenId = _tokenIdCounter.current();
         _safeMint(to, tokenId);
         _setTokenURI(tokenId, uri);
-        _ownedObservations[to].push(tokenId);
         emit ObservationMinted(to, tokenId, uri);
         return tokenId;
     }
@@ -82,4 +81,29 @@ contract ZenoVerse is ERC721URIStorage, Ownable {
         _setTokenURI(tokenId, newURI);
     }
 
+    /// 🔁 Override hook to track transfers
+    function _beforeTokenTransfer(
+        address from,
+        address to,
+        uint256 tokenId,
+        uint256 /* batchSize */
+    ) internal override {
+        super._beforeTokenTransfer(from, to, tokenId, 1);
+
+        if (from != address(0)) {
+            // Remove token from previous owner
+            uint256[] storage fromTokens = _ownedObservations[from];
+            for (uint256 i = 0; i < fromTokens.length; i++) {
+                if (fromTokens[i] == tokenId) {
+                    fromTokens[i] = fromTokens[fromTokens.length - 1];
+                    fromTokens.pop();
+                    break;
+                }
+            }
+        }
+
+        if (to != address(0)) {
+            _ownedObservations[to].push(tokenId);
+        }
+    }
 }
