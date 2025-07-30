@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { classifyImage } from '@/lib/cnnClient';
 import { isVisible } from '@/lib/visibilityCheck';
-import { isDuplicate } from '@/lib/imageHash';
+import { compareHashes } from '@/lib/imageHash';
 import { uploadMetadataToIPFS } from '@/lib/ipfs';
 import { mintObservation } from '@/lib/mintNFT';
 import { logValidation } from '@/lib/logValidation';
@@ -77,7 +77,8 @@ export async function POST(req) {
     console.log("Visibility Check:", visible);
 
     // 3. Duplicate Check
-    const isDup = await isDuplicate(tempFilePath);
+    const hashData = await compareHashes(tempFilePath);
+    const isDup = hashData.isDuplicate;
     if (isDup) {
       logEntry.reason = 'Duplicate image detected';
       await logValidation(logEntry);

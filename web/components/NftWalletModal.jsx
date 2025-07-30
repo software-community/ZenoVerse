@@ -1,8 +1,12 @@
   "use client";
   import React, { useState, useEffect } from "react";
+  import { getUserNFTMetadata } from "../lib/contractActions";
 
   export default function NftWalletModal() {
     const [popupNft, setPopupNft] = useState(null);
+
+    const NFTs = getUserNFTMetadata();
+    console.log("User Owned NFTs:", NFTs);
 
     const staticNFTs = [
       { name: "Iron Ape", image: "/ironman.jpg", tokenId: "1001", price: "2.1 ETH", chain: "Ethereum" },
