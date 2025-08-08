@@ -24,6 +24,7 @@ export const AccountProvider = ({ children }) => {
             if (accounts.length > 0) {
                 setAccount(accounts[0]);
                 const contractInstance = await initialize_contract();
+                console.log("Contract initialized:", contractInstance);
                 setContract(contractInstance);
             }
             } else {

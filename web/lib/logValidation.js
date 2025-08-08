@@ -16,9 +16,6 @@ async function ensureMongoConnected() {
 
 export async function logValidation(data) {
   try {
-    console.log('Logging validation:');
-    console.log(data);
-
     await ensureMongoConnected();
 
     const validation = new Validation(data);

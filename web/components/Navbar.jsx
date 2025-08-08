@@ -47,7 +47,7 @@ function Navbar() {
       >
         <li>
           <a
-            href="#home"
+            href="/"
             className="block text-white no-underline px-6 sm:px-7 py-3 border-2 border-[#7407b8] rounded-full bg-gradient-to-r from-[#7407b8] to-[#070838] shadow-[0_0_16px_#7407b8,0_0_4px_#fff2] text-base sm:text-lg tracking-wide transition-all duration-200 relative overflow-hidden hover:bg-gradient-to-r hover:from-[#070838] hover:to-[#7407b8] hover:border-white hover:shadow-[0_0_24px_#7407b8,0_0_8px_#fff4] text-center"
           >
             Home
@@ -55,7 +55,7 @@ function Navbar() {
         </li>
         <li>
           <a
-            href="#nft"
+            href="/nftcollection"
             className="block text-white no-underline px-6 sm:px-7 py-3 border-2 border-[#7407b8] rounded-full bg-gradient-to-r from-[#7407b8] to-[#070838] shadow-[0_0_16px_#7407b8,0_0_4px_#fff2] text-base sm:text-lg tracking-wide transition-all duration-200 relative overflow-hidden hover:bg-gradient-to-r hover:from-[#070838] hover:to-[#7407b8] hover:border-white hover:shadow-[0_0_24px_#7407b8,0_0_8px_#fff4] text-center"
           >
             NFT Collection

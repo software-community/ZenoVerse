@@ -1,5 +1,5 @@
 // We can initialize the environment variables later for now the server will use the default URL
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:5000';
 
 export const isVisible = async ({ constellation, latitude, longitude, timestamp}) => {
   try {
@@ -17,10 +17,11 @@ export const isVisible = async ({ constellation, latitude, longitude, timestamp}
     });
 
     if (!response.ok) {
-      throw new Error(`Visibility API error: ${response.statusText}`);
+      throw new Error(`Visibility API error: ${response.error}`);
     }
 
     const data = await response.json();
+    console.log('details: ', data.details)
     return data.visible;
   } catch (error) {
     console.error('Error checking visibility:', error);

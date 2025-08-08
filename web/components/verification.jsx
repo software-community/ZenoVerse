@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const VerificationForm = () => {
   const [selectedImage, setSelectedImage] = useState(null);
@@ -6,46 +6,110 @@ const VerificationForm = () => {
   const [verificationResult, setVerificationResult] = useState(null);
   const [showFailurePopup, setShowFailurePopup] = useState(false);
   const [showLoadingPopup, setShowLoadingPopup] = useState(false);
+  const [selectedConstellation, setSelectedConstellation] = useState("");
+  const [latitude, setLatitude] = useState(null);
+  const [longitude, setLongitude] = useState(null);
+  const [userAddress, setUserAddress] = useState("");
+
+  const constellations = [
+    "Orion",
+    "Ursa Major",
+    "Cassiopeia",
+    "Andromeda",
+    "Lyra",
+    "Cygnus",
+    "Scorpius",
+    "Aquila",
+  ];
+
+  // Fetch user's location
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setLatitude(position.coords.latitude);
+          setLongitude(position.coords.longitude);
+        },
+        (error) => {
+          console.error("Location access denied or failed:", error);
+        }
+      );
+    }
+  }, []);
+
+  // Connect MetaMask and get user address
+  useEffect(() => {
+    const getWalletAddress = async () => {
+      if (typeof window !== "undefined" && window.ethereum) {
+        try {
+          const accounts = await window.ethereum.request({
+            method: "eth_requestAccounts",
+          });
+          setUserAddress(accounts[0]);
+        } catch (err) {
+          console.error("User denied wallet connection or no wallet found");
+        }
+      } else {
+        console.error("MetaMask not detected");
+      }
+    };
+    getWalletAddress();
+  }, []);
 
   const handleImageChange = async (e) => {
     if (e.target.files && e.target.files[0]) {
       setSelectedImage(e.target.files[0]);
       setVerificationResult(null);
-
-      // Show loading popup and start verification
       setShowLoadingPopup(true);
       await verifyImage(e.target.files[0]);
     }
   };
-
+// Function to verify the image
   const verifyImage = async (imageFile = selectedImage) => {
     if (!imageFile) return;
+    if (!selectedConstellation) {
+      alert("Please select a constellation first.");
+      setShowLoadingPopup(false);
+      return;
+    }
 
     setIsVerifying(true);
 
     try {
-      // Simulate verification process
-      await new Promise(resolve => setTimeout(resolve, 3000));
+      const formData = new FormData();
+      formData.append("image", imageFile);
+      formData.append("constellation", selectedConstellation);
+      formData.append("latitude", latitude);
+      formData.append("longitude", longitude);
+      formData.append("timestamp", "2025-02-07T01:00:00+05:00");
+      formData.append("userAddress", userAddress);
 
-      // Random success/failure (70% success rate)
-      const isSuccess = Math.random() > 0.3;
+      console.log("Submitting form data:")
+      const response = await fetch("/api/validate", {
+        method: "POST",
+        body: formData,
+      });
+      console.log("Response status:", response.status);
 
-      if (isSuccess) {
-        // Mock successful verification result
-        const mockResult = {
+      const result = await response.json();
+
+      if (result.validated) {
+        setVerificationResult({
           timestamp: new Date().toISOString(),
-          ipfsHash: 'QmMockHashForDemo123456789'
-        };
-        setVerificationResult(mockResult);
+          ipfsHash: result.tokenURI,
+          txHash: result.txHash,
+          constellation: selectedConstellation,
+          latitude,
+          longitude,
+          userAddress,
+        });
         setShowLoadingPopup(false);
       } else {
-        // Show failure popup
         setShowLoadingPopup(false);
         setShowFailurePopup(true);
       }
-
     } catch (error) {
-      console.error('Verification error:', error);
+      console.error("Verification error:", error);
       setShowLoadingPopup(false);
       setShowFailurePopup(true);
     } finally {
@@ -59,11 +123,12 @@ const VerificationForm = () => {
     setVerificationResult(null);
   };
 
+const formatAddress = (addr) => addr ? `${addr.slice(0, 6)}...${addr.slice(-4)}` : "Not Connected";
+
   return (
     <>
       <div className="min-h-screen bg-gradient-to-br from-[#0b0b2b] to-[#1C1A44] py-12 px-4 text-white">
         <div className="max-w-4xl mx-auto">
-          {/* Header */}
           <div className="text-center mb-10">
             <h1 className="text-5xl md:text-6xl font-extrabold bg-gradient-to-r from-[#7407b8] to-[#428cff] bg-clip-text text-transparent">
               🪐 Image Verification
@@ -74,9 +139,7 @@ const VerificationForm = () => {
             <div className="w-24 h-1 bg-gradient-to-r from-[#7407b8] to-[#428cff] mx-auto mt-4 rounded-full" />
           </div>
 
-          {/* Card */}
           <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl shadow-2xl overflow-hidden p-8 space-y-6">
-            {/* Image Preview */}
             {selectedImage ? (
               <div className="rounded-2xl overflow-hidden shadow-lg border border-white/10">
                 <img
@@ -87,7 +150,7 @@ const VerificationForm = () => {
               </div>
             ) : (
               <div className="flex items-center justify-center h-72 rounded-2xl bg-white/10 border border-white/10 text-white/50 text-xl">
-                 Upload an image to preview it here
+                Upload an image to preview it here
               </div>
             )}
 
@@ -106,6 +169,21 @@ const VerificationForm = () => {
                 </div>
               </div>
             )}
+
+            {/* Select Constellation */}
+            <div className="text-black/80">
+              <label className="block mb-2 text-sm text-white/60">Select Constellation</label>
+              <select
+                value={selectedConstellation}
+                onChange={(e) => setSelectedConstellation(e.target.value)}
+                className="w-full p-3 rounded-xl bg-white/10 border border-white/10 text-black focus:outline-none"
+              >
+                <option value="">-- Select --</option>
+                {constellations.map((name) => (
+                  <option key={name} value={name}>{name}</option>
+                ))}
+              </select>
+            </div>
 
             {/* Upload Button */}
             <label className="block cursor-pointer">
@@ -128,10 +206,10 @@ const VerificationForm = () => {
                 <p className="text-white/70 text-sm">
                   At: {new Date(verificationResult.timestamp).toLocaleString()}
                 </p>
-                <p className="text-white/40 text-xs mt-1">
-                  IPFS: {verificationResult.ipfsHash}
-                </p>
-                {/* Go to NFT Collection Button */}
+                <p className="text-sm text-white/70 mt-2">Constellation: {verificationResult.constellation}</p>
+                <p className="text-xs text-white/40">Lat: {verificationResult.latitude}, Lon: {verificationResult.longitude}</p>
+                <p className="text-xs text-white/40">Wallet: {formatAddress(verificationResult.userAddress)}</p>
+                <p className="text-white/40 text-xs mt-1">IPFS: {verificationResult.ipfsHash}</p>
                 <a
                   href="/nftcollection"
                   className="mt-4 inline-block bg-gradient-to-r from-[#7407b8] to-[#428cff] px-6 py-3 rounded-full text-white font-semibold shadow-[0_0_15px_#7407b8] hover:shadow-[0_0_25px_#7407b8] hover:scale-105 transition-all"

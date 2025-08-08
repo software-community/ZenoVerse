@@ -225,6 +225,7 @@ def check_constellation_visibility():
         required_params = ['constellation', 'latitude', 'longitude', 'timestamp']
         for param in required_params:
             if param not in data:
+                print(f"Missing required parameter: {param}")
                 return jsonify({
                     'error': f'Missing required parameter: {param}',
                     'visible': False
@@ -234,17 +235,19 @@ def check_constellation_visibility():
         constellation = data['constellation']
         latitude = float(data['latitude'])
         longitude = float(data['longitude'])
-        timestamp = float(data['timestamp'])
+        timestamp = data['timestamp']
         min_altitude = float(data.get('min_altitude', 20))
         
         # Validate coordinate ranges
         if not (-90 <= latitude <= 90):
+            print(f"Invalid latitude: {latitude}")
             return jsonify({
                 'error': 'Latitude must be between -90 and 90 degrees',
                 'visible': False
             }), 400
             
         if not (-180 <= longitude <= 180):
+            print(f"Invalid longitude: {longitude}")
             return jsonify({
                 'error': 'Longitude must be between -180 and 180 degrees',
                 'visible': False
@@ -252,8 +255,9 @@ def check_constellation_visibility():
         
         # Parse timestamp to UTC datetime
         try:
-            dt = datetime.fromtimestamp(timestamp, tz=pytz.UTC)
+            dt = datetime.fromisoformat(timestamp)
         except Exception as e:
+            print(f"Invalid timestamp format: {timestamp}")
             return jsonify({
                 'error': f'Invalid timestamp: {str(e)}',
                 'visible': False
@@ -281,6 +285,7 @@ def check_constellation_visibility():
         return jsonify(response)
         
     except Exception as e:
+        print(e)
         return jsonify({
             'error': f'Internal server error: {str(e)}',
             'visible': False

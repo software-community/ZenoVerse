@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
 import ZenoVerseABI from './ZenoVerseABI.json';
 
-const CONTRACT_ADDRESS = process.env.ZENOVERSE_CONTRACT_ADDRESS;
+const CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_ZENOVERSE_CONTRACT_ADDRESS;
 const RPC_URL = process.env.RPC_URL;
 const PRIVATE_KEY = process.env.PRIVATE_KEY;
 

@@ -77,6 +77,11 @@ describe("ZenoVerse", function () {
     expect(tokenIds).to.have.members([1, 2, 3]);
   });
 
+  it("should return an empty array when the user owns no tokens", async function () {
+    const tokens = await zenoverse.getAllTokensByOwner(addr1.address);
+    expect(tokens).to.be.an("array").that.is.empty;
+  });
+
   it("should revert if user address is zero", async function () {
     const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 

@@ -48,9 +48,14 @@ export async function getUserOwnedTokenIds() {
 
 export async function getUserNFTMetadata() {
   const { account, contract } = useContext(accountContext);
+  if (!account || !contract) {
+    return; 
+  }
+
   try {
     // 1. Get token IDs owned by user
     const tokenIds = await contract.getAllTokensByOwner(account);
+    console.log("User Token IDs:", tokenIds); 
 
     // 2. Fetch metadata for each token
     const metadataPromises = tokenIds.map(async (tokenId) => {
