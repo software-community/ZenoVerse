@@ -46,8 +46,7 @@ export async function getUserOwnedTokenIds() {
   }
 };
 
-export async function getUserNFTMetadata() {
-  const { account, contract } = useContext(accountContext);
+export async function getUserNFTMetadata(account, contract) {
   if (!account || !contract) {
     return; 
   }
@@ -62,12 +61,18 @@ export async function getUserNFTMetadata() {
       const tokenURI = await contract.tokenURI(tokenId);
       
       // If it's an IPFS URI, convert it to a gateway link
-      const url = tokenURI.startsWith("ipfs://")
+      let url = tokenURI.startsWith("ipfs://")
         ? tokenURI.replace("ipfs://", "https://ipfs.io/ipfs/")
         : tokenURI;
+      
+      // If pinata, replace to ipfs:
+      if (url.startsWith("https://gateway.pinata.cloud/ipfs/")) {
+        url = url.replace("https://gateway.pinata.cloud/ipfs/", "https://ipfs.io/ipfs/");
+      }
 
       const res = await fetch(url);
       const metadata = await res.json();
+      console.log("Fetched metadata for token ID:", tokenId, metadata);
 
       return {
         tokenId: tokenId.toString(),
