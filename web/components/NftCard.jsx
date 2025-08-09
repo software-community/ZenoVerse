@@ -57,8 +57,8 @@ const NftCard = ({ nft }) => {
         {/* NFT Image */}
         <div className="relative h-48 sm:h-56 overflow-hidden">
           <img
-            src={getImageSrc(nft.image)}
-            alt={nft.name}
+            src={getImageSrc(nft.metadata.image)}
+            alt={nft.metadata.name}
             className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
           />
           {/* Dark overlay */}
@@ -67,7 +67,7 @@ const NftCard = ({ nft }) => {
           {/* Title overlay */}
           <div className="absolute bottom-0 left-0 right-0 p-6">
             <h2 className="text-white text-xl font-bold leading-tight line-clamp-2">
-              {nft.name}
+              {nft.metadata.name}
             </h2>
           </div>
         </div>
@@ -79,18 +79,18 @@ const NftCard = ({ nft }) => {
               Token ID: {nft.tokenId}
             </span>
             <span className="text-neutral-500 text-sm bg-neutral-100 px-2 py-1 rounded-full">
-              {nft.chain}
+              {nft.chain ? nft.chain : "Ethereum"}
             </span>
           </div>
 
           {/* Price and Confidence */}
           <div className="flex items-center justify-between">
             <span className="text-lg font-bold text-green-600">
-              {nft.price}
+              {nft.price ? nft.price : "00.00 ETH"}
             </span>
-            {typeof nft.confidence === "number" && (
+            {typeof nft.metadata.confidence === "number" && (
               <span className="text-sm font-medium text-neutral-600 bg-neutral-100 px-2 py-1 rounded">
-                {Math.round(nft.confidence * 100)}% Confidence
+                {Math.round(nft.metadata.confidence * 100)}% Confidence
               </span>
             )}
           </div>

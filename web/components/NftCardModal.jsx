@@ -76,8 +76,8 @@ const NftCardModal = ({ nft, onClose }) => {
         {/* Left: Image */}
         <div className="bg-neutral-100 flex items-center justify-center p-5">
           <img
-            src={getImageSrc(nft?.image)}
-            alt={nft?.name}
+            src={getImageSrc(nft?.metadata?.image)}
+            alt={nft?.metadata?.name}
             className="max-h-[80vh] w-full object-contain rounded-lg"
           />
         </div>
@@ -85,7 +85,7 @@ const NftCardModal = ({ nft, onClose }) => {
         {/* Right: Details */}
         <div className="p-6 space-y-4">
           <div className="flex items-start justify-between gap-4">
-            <h2 className="text-xl font-bold text-neutral-900">{nft?.name}</h2>
+            <h2 className="text-xl font-bold text-neutral-900">{nft?.metadata?.name}</h2>
           </div>
 
           <div className="grid grid-cols-1 gap-3 text-sm">
@@ -95,39 +95,39 @@ const NftCardModal = ({ nft, onClose }) => {
             </div>
             <div className="flex justify-between">
               <span className="text-neutral-500">Price</span>
-              <span className="font-medium">{nft?.price}</span>
+              <span className="font-medium">{nft?.price ? nft.price : "00.00 ETH"}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-neutral-500">Chain</span>
-              <span className="font-medium">{nft?.chain}</span>
+              <span className="font-medium">{nft?.chain ? nft.chain : "Ethereum"}</span>
             </div>
-            {typeof nft?.confidence === "number" && (
+            {typeof nft?.metadata?.confidence === "number" && (
               <div className="flex justify-between">
                 <span className="text-neutral-500">Confidence Score</span>
                 <span className="font-medium">
-                  {Math.round(nft.confidence * 100)}%
+                  {Math.round(nft.metadata.confidence * 100)}%
                 </span>
               </div>
             )}
-            {typeof nft?.lat === "number" && typeof nft?.long === "number" && (
+            {typeof nft?.metadata?.latitude === "number" && typeof nft?.metadata?.longitude === "number" && (
               <div className="flex justify-between">
                 <span className="text-neutral-500">Location</span>
                 <span className="font-medium">
-                  {formatCompass(nft.lat, nft.long)}
+                  {formatCompass(nft.metadata.latitude, nft.metadata.longitude)}
                 </span>
               </div>
             )}
-            {nft?.timestamp && (
+            {nft?.metadata?.timestamp && (
               <div className="flex justify-between">
                 <span className="text-neutral-500">Time</span>
-                <span className="font-medium">{formatTime(nft.timestamp)}</span>
+                <span className="font-medium">{formatTime(nft.metadata.timestamp)}</span>
               </div>
             )}
-            {nft?.description && (
+            {nft?.metadata?.description && (
               <div className="flex flex-col pt-3 border-t border-neutral-200">
                 <span className="text-neutral-500 mb-1">Description</span>
                 <span className="font-medium leading-relaxed text-neutral-800">
-                  {nft.description}
+                  {nft.metadata.description}
                 </span>
               </div>
             )}
