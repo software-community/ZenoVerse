@@ -12,14 +12,18 @@ const VerificationForm = () => {
   const [userAddress, setUserAddress] = useState("");
 
   const constellations = [
-    "Orion",
-    "Ursa Major",
-    "Cassiopeia",
-    "Andromeda",
-    "Lyra",
-    "Cygnus",
-    "Scorpius",
-    "Aquila",
+  "Aries",
+  "Taurus",
+  "Gemini",
+  "Cancer",
+  "Leo",
+  "Virgo",
+  "Libra",
+  "Scorpius",
+  "Sagittarius",
+  "Capricornus",
+  "Aquarius",
+  "Pisces", 
   ];
 
   // Fetch user's location
@@ -81,7 +85,7 @@ const VerificationForm = () => {
       formData.append("constellation", selectedConstellation);
       formData.append("latitude", latitude);
       formData.append("longitude", longitude);
-      formData.append("timestamp", "2025-02-07T01:00:00+05:00");
+      formData.append("timestamp", new Date().toISOString());
       formData.append("userAddress", userAddress);
 
       console.log("Submitting form data:")
