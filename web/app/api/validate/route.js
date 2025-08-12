@@ -30,7 +30,7 @@ export async function POST(req) {
       lng: parseFloat(longitude),
     },
     time: new Date(timestamp).toISOString(),
-    constellation: userConstellation,
+    constellation: "",
     confidenceScore: 0.92, // default placeholder
     isValid: false,
     reason: "",
@@ -78,18 +78,17 @@ export async function POST(req) {
       );
     }
     // 1. CNN Classification
-    // const cnnPredictionData = await classifyImage(tempFilePath);
-    // const cnnPrediction = cnnPredictionData.constellation;
-    // const cnnConfidence = cnnPredictionData.confidenceScore;
+    const cnnPredictionData = await classifyImage(tempFilePath);
+    const cnnPrediction = cnnPredictionData.constellation;
+    const cnnConfidence = cnnPredictionData.confidenceScore;
 
-    const cnnPrediction = userConstellation;
-    const cnnConfidence = 0.95;
-
+    logEntry.constellation = cnnPrediction;
     logEntry.confidenceScore = cnnConfidence;
 
-    if (cnnPrediction !== userConstellation) {
-      logEntry.reason = "Constellation mismatch";
-      console.warn("Validation failed: Constellation mismatch", logEntry);
+    // if confidence < threshold of 70%, reject
+    if (cnnConfidence < 0.7) {
+      logEntry.reason = "No constellation or low confidence: " + cnnConfidence;
+      console.warn("Validation failed: Low confidence score:", cnnConfidence);
       await logValidation(logEntry);
       return NextResponse.json(
         { validated: false, reason: logEntry.reason },
@@ -97,7 +96,15 @@ export async function POST(req) {
       );
     }
 
-    logEntry.confidenceScore = cnnConfidence;
+    if (cnnPrediction.toLowerCase() !== userConstellation.toLowerCase()) {
+      logEntry.reason = "Constellation mismatch. User claim: " + userConstellation + ", CNN prediction: " + cnnPrediction;
+      console.warn("Validation failed: Constellation mismatch. User claim: ", userConstellation, " CNN prediction: ", cnnPrediction, logEntry);
+      await logValidation(logEntry);
+      return NextResponse.json(
+        { validated: false, reason: logEntry.reason },
+        { status: 400 }
+      );
+    }
 
     // 2. Visibility Check
     const visible = await isVisible({

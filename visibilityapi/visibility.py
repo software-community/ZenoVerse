@@ -187,7 +187,7 @@ def is_constellation_visible(constellation_name, latitude, longitude, observatio
     
     # Constellation is considered visible if at least 30% of sample points are visible
     visibility_ratio = visible_points / total_points if total_points > 0 else 0
-    is_visible = visibility_ratio >= 0.3
+    is_visible = visibility_ratio >= 0.2
     
     return is_visible, f"Visibility ratio: {visibility_ratio:.2f}"
 
