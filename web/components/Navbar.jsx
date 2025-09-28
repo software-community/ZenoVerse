@@ -4,8 +4,14 @@ import ConnectWalletButton from "./ConnectWalletButton";
 
 function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [underlineStyle, setUnderlineStyle] = useState({ left: 0, width: 0 });
   const navRef = useRef(null);
+
+
+  const [underlineStyle, setUnderlineStyle] = useState({
+    left: 0,
+    width: 0,
+    active: false,
+  });
 
   const handleHover = (e) => {
     const link = e.currentTarget;
@@ -13,15 +19,17 @@ function Navbar() {
     if (nav && link) {
       const navRect = nav.getBoundingClientRect();
       const linkRect = link.getBoundingClientRect();
+
       setUnderlineStyle({
-        left: linkRect.left - navRect.left,
-        width: linkRect.width,
+        left: linkRect.left - navRect.left, // underline under the link
+        width: linkRect.width,             // underline = link width
+        active: true,
       });
     }
   };
 
   const handleLeave = () => {
-    setUnderlineStyle({ left: 0, width: 0 });
+    setUnderlineStyle((prev) => ({ ...prev, active: false }));
   };
 
   return (
@@ -51,9 +59,8 @@ function Navbar() {
 
       {/* Nav Links */}
       <ul
-        className={`${
-          menuOpen ? "" : "hidden"
-        } sm:flex gap-4 sm:gap-6 m-0 p-0 list-none w-full sm:w-auto flex-col sm:flex-row absolute sm:static top-full left-0 bg-[#070838] sm:bg-transparent shadow-lg sm:shadow-none rounded-b-2xl sm:rounded-none z-10`}
+        className={`${menuOpen ? "" : "hidden"
+          } sm:flex gap-4 sm:gap-6 m-0 p-0 list-none w-full sm:w-auto flex-col sm:flex-row absolute sm:static top-full left-0 bg-[#070838] sm:bg-transparent shadow-lg sm:shadow-none rounded-b-2xl sm:rounded-none z-10`}
       >
         {[
           { href: "/", label: "Home" },
@@ -76,13 +83,15 @@ function Navbar() {
       {/* White line on navbar border below hovered button */}
       {underlineStyle.width > 0 && (
         <div
-          className="absolute bottom-0 h-[2px] bg-white"
+          className="absolute bottom-0 h-[2px] bg-white origin-center transition-transform duration-300"
           style={{
             left: underlineStyle.left,
             width: underlineStyle.width,
+            transform: underlineStyle.active ? "scaleX(1)" : "scaleX(0)",
           }}
         />
       )}
+
 
       {/* Connect Wallet */}
       <div className="ml-auto hidden sm:block">
