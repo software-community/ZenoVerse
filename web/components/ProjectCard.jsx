@@ -11,6 +11,8 @@ const ProjectCard = ({ title, description, image, status, imageLink }) => {
   return (
     <Link
       href={imageLink?.href || "#"}
+      target="_blank"
+      rel="noopener noreferrer"
       className="bg-white/90 rounded-2xl shadow-xl p-6 flex flex-col items-center w-[320px] min-h-[420px] mx-4 my-6 transition-transform duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#7407b8] group"
       tabIndex={0}
     >
