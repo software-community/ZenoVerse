@@ -132,29 +132,29 @@ const VerificationForm = () => {
 
   return (
     <>
-      <div className="min-h-screen py-8 px-4 text-white flex flex-col justify-center">
-        <div className="max-w-5xl mx-auto w-full">
-          <div className="text-center mb-10 px-4">
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-white/30 drop-shadow-lg leading-tight">
+      <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-8 text-white flex flex-col justify-center">
+        <div className="max-w-4xl sm:max-w-5xl mx-auto w-full">
+          <div className="text-center mb-8 px-4 sm:px-6">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-white/30 drop-shadow-lg leading-tight">
               Image Verification
             </h1>
-            <p className="text-white/90 mt-4 text-lg md:text-xl max-w-2xl mx-auto drop-shadow-md">
+            <p className="text-white/90 mt-4 text-base md:text-lg max-w-2xl mx-auto drop-shadow-md">
               Upload a constellation image to verify its authenticity
             </p>
-            <div className="w-32 h-1 bg-gradient-to-r from-[#7407b8] to-[#428cff] mx-auto mt-6 rounded-full shadow-lg" />
+            <div className="w-28 h-1 bg-gradient-to-r from-[#7407b8] to-[#428cff] mx-auto mt-6 rounded-full shadow-lg" />
           </div>
 
-          <div className="p-8 space-y-6">
+          <div className="p-4 sm:p-8 space-y-6">
             {selectedImage ? (
               <div className="rounded-2xl overflow-hidden shadow-lg border border-white/10">
                 <img
                   src={URL.createObjectURL(selectedImage)}
                   alt="Selected"
-                  className="w-full h-72 object-cover rounded-xl"
+                  className="w-full h-56 sm:h-72 md:h-96 object-cover rounded-xl"
                 />
               </div>
             ) : (
-              <div className="flex items-center justify-center h-72 rounded-2xl bg-black/20 border border-white/20 text-white/70 text-xl backdrop-blur-sm">
+              <div className="flex items-center justify-center h-56 sm:h-72 rounded-2xl bg-black/20 border border-white/20 text-white/70 text-lg sm:text-xl backdrop-blur-sm px-4 text-center">
                 Upload an image to preview it here
               </div>
             )}
@@ -177,67 +177,39 @@ const VerificationForm = () => {
 
             {/* Select Constellation */}
             <div>
-              <label className="block mb-2 text-sm text-white">
-                Select Constellation
-              </label>
+              <label className="block mb-2 text-sm text-white">Select Constellation</label>
               <select
                 value={selectedConstellation}
                 onChange={(e) => setSelectedConstellation(e.target.value)}
-                className="w-full p-3 rounded-xl bg-white/10 border border-white/10 text-white focus:outline-none [&>option]:text-black [&>option]:bg-white"
-                style={{
-                  color: 'white',
-                  backgroundColor: 'rgba(255, 255, 255, 0.1)'
-                }}
+                className="w-full p-3 rounded-xl bg-white border border-white/10 text-purple-700 focus:outline-none"
+                aria-label="Select constellation"
               >
-                <option value="" style={{ color: 'black', backgroundColor: 'white' }}>-- Select --</option>
+                <option value="">-- Select --</option>
                 {constellations.map((name) => (
-                  <option key={name} value={name} style={{ color: 'black', backgroundColor: 'white' }}>
-                    {name}
-                  </option>
+                  <option key={name} value={name}>{name}</option>
                 ))}
               </select>
             </div>
 
             {/* Upload Button */}
             <label className="block cursor-pointer">
-              <div className="w-full text-center py-4 text-lg font-semibold rounded-full bg-gradient-to-r from-[#7407b8] to-[#428cff] shadow-[0_0_15px_#7407b8] hover:from-[#428cff] hover:to-[#7407b8] hover:shadow-[0_0_25px_#7407b8] transition-all duration-300">
+              <div className="w-full text-center py-3 sm:py-4 text-base sm:text-lg font-semibold rounded-full bg-gradient-to-r from-[#7407b8] to-[#428cff] shadow-[0_0_15px_#7407b8] hover:from-[#428cff] hover:to-[#7407b8] hover:shadow-[0_0_25px_#7407b8] transition-all duration-300">
                 {selectedImage ? "Change Image" : "Upload & Verify Image"}
               </div>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
-                className="hidden"
-              />
+              <input type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
             </label>
 
             {/* Result */}
             {verificationResult && (
               <div className="mt-6 bg-black/20 border border-white/20 p-6 rounded-xl text-center text-white backdrop-blur-sm">
-                <div className="text-4xl mb-2">✅</div>
-                <h3 className="text-2xl font-bold mb-1">
-                  Verified Successfully
-                </h3>
-                <p className="text-white/70 text-sm">
-                  At: {new Date(verificationResult.timestamp).toLocaleString()}
-                </p>
-                <p className="text-sm text-white/70 mt-2">
-                  Constellation: {verificationResult.constellation}
-                </p>
-                <p className="text-xs text-white/40">
-                  Lat: {verificationResult.latitude}, Lon:{" "}
-                  {verificationResult.longitude}
-                </p>
-                <p className="text-xs text-white/40">
-                  Wallet: {formatAddress(verificationResult.userAddress)}
-                </p>
-                <p className="text-white/40 text-xs mt-1">
-                  IPFS: {verificationResult.ipfsHash}
-                </p>
-                <a
-                  href="/nftcollection"
-                  className="mt-4 inline-block bg-gradient-to-r from-[#7407b8] to-[#428cff] px-6 py-3 rounded-full text-white font-semibold shadow-[0_0_15px_#7407b8] hover:shadow-[0_0_25px_#7407b8] hover:scale-105 transition-all"
-                >
+                <div className="text-3xl sm:text-4xl mb-2">✅</div>
+                <h3 className="text-xl sm:text-2xl font-bold mb-1">Verified Successfully</h3>
+                <p className="text-white/70 text-sm sm:text-base">At: {new Date(verificationResult.timestamp).toLocaleString()}</p>
+                <p className="text-sm sm:text-base text-white/70 mt-2">Constellation: {verificationResult.constellation}</p>
+                <p className="text-xs sm:text-sm text-white/40">Lat: {verificationResult.latitude}, Lon: {verificationResult.longitude}</p>
+                <p className="text-xs sm:text-sm text-white/40">Wallet: {formatAddress(verificationResult.userAddress)}</p>
+                <p className="text-white/40 text-xs sm:text-sm mt-1">IPFS: {verificationResult.ipfsHash}</p>
+                <a href="/nftcollection" className="mt-4 inline-block bg-gradient-to-r from-[#7407b8] to-[#428cff] px-5 py-2 sm:px-6 sm:py-3 rounded-full text-white font-semibold shadow-[0_0_15px_#7407b8] hover:shadow-[0_0_25px_#7407b8] hover:scale-105 transition-all">
                   🚀 View in NFT Collection
                 </a>
               </div>

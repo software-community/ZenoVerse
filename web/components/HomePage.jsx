@@ -138,7 +138,7 @@ function HomePage() {
         {/* Background video confined to hero section only */}
         <video
           ref={videoRef}
-          src="/video2.mp4"
+          src="/stellarium_final.mp4"
           muted
           autoPlay
           loop
@@ -153,25 +153,19 @@ function HomePage() {
           }}
         />
 
-        <div className="flex flex-wrap items-center justify-center gap-6 min-h-screen w-full box-border px-4 py-0 relative z-10">
-          <div className="flex items-center justify-center flex-shrink-0">
+        <div className="flex flex-wrap items-center justify-center min-h-screen w-full box-border px-4 py-0 relative z-10">
+          <div className="flex items-center justify-center flex-shrink-0 mx-4 p-2">
             <img
               src="zenoverse_logo.png"
               alt="Zenoverse Logo"
-              className="rounded-full bg-gradient-to-br from-[#070838] to-[#7407b8] shadow-[0_0_32px_8px_#7407b8,0_0_0_12px_#070838_inset] p-5 object-cover transition-shadow duration-400 blur-[1px]"
-              style={{
-                width: "320px",
-                height: "320px",
-                maxWidth: "30vw",
-                maxHeight: "30vw",
-              }}
+              className="rounded-full bg-gradient-to-br from-[#070838] to-[#7407b8] shadow-[0_0_32px_8px_#7407b8,0_0_0_12px_#070838_inset] p-4 object-cover transition-shadow duration-400 blur-[1px] w-36 h-36 sm:w-48 sm:h-48 md:w-64 md:h-64"
             />
           </div>
-          <div className="flex flex-col items-center justify-center max-w-xl text-center mx-0">
+          <div className="flex flex-col items-center justify-center max-w-lg sm:max-w-xl text-center px-4 sm:px-6">
             <h1 className="bg-gradient-to-r from-[#7407b8] to-[#428cff] bg-clip-text text-transparent text-3xl md:text-4xl font-bold mb-3">
               Zenoverse
             </h1>
-            <p className="text-purple-800 text-lg md:text-xl leading-relaxed">
+            <p className="text-purple-800 text-base sm:text-lg md:text-xl leading-relaxed">
               Zenoverse empowers you to transform your own constellation images
               into unique, mintable NFTs. Simply upload your stargazing photos,
               and our advanced AI model will analyze and recognize the
@@ -184,7 +178,7 @@ function HomePage() {
       </div>
 
       {/* Image Verification section with background video */}
-      <div className="relative py-6 px-2 sm:px-4 mt-6 w-full min-h-screen overflow-hidden">
+      <div className="relative py-6 px-4 sm:px-6 w-full min-h-screen overflow-hidden">
         {/* Background video confined to verification section only */}
         <video
           ref={verificationVideoRef}
@@ -203,7 +197,7 @@ function HomePage() {
           }}
         />
 
-        <div className="flex flex-col items-center w-full min-h-screen relative z-10">
+        <div className="flex flex-col items-center w-full min-h-screen relative z-10 px-4 sm:px-6" id="verification">
           {/* <form
             className="flex flex-col items-center gap-4 w-full max-w-xl"
             id="image-upload-form"
@@ -249,23 +243,6 @@ function HomePage() {
         </div>
       </div>
 
-      <div className="flex flex-col items-center my-12 min-h-screen relative z-10 bg-gradient-to-br from-[#0b0b2b] to-[#1C1A44] py-12">
-        <h1 className="text-2xl md:text-3xl font-bold text-white mb-4 text-center">
-          Other SoftCom Projects
-        </h1>
-        <div className="gap-6 md:gap-10 flex flex-col sm:flex-row flex-wrap justify-center items-stretch w-full max-w-7xl mx-auto px-2">
-          {otherProjects.map((project, idx) => (
-            <ProjectCard
-              key={project.id || idx}
-              title={project.title}
-              status={project.status}
-              description={project.description}
-              image={project.image}
-              imageLink={project.imageLink}
-            />
-          ))}
-        </div>
-      </div>
     </>
   );
 }
