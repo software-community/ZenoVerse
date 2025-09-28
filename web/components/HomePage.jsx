@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import ProjectCard from "./ProjectCard";
 import VerificationForm from "./verification";
 
@@ -40,6 +40,68 @@ const otherProjects = [
 function HomePage() {
   const [previewSrc, setPreviewSrc] = useState("");
   const previewRef = useRef(null);
+  const videoRef = useRef(null);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    let rafId = null;
+    const lastScrollY = { value: typeof window !== 'undefined' ? window.scrollY : 0 };
+    const lastTime = { value: performance.now() };
+    const targetRate = { value: 1 };
+
+    // clamp helper
+    const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+
+    const onScroll = () => {
+      const now = performance.now();
+      const y = window.scrollY;
+      const dy = y - lastScrollY.value;
+      const dt = Math.max(now - lastTime.value, 1);
+      const velocity = Math.abs(dy) / dt; // px per ms
+
+      // Map velocity to playbackRate: base 1.0, add up to +2.0 depending on velocity
+      const mapped = 1 + velocity * 120; // tuned multiplier
+      targetRate.value = clamp(mapped, 0.5, 3.0);
+
+      lastScrollY.value = y;
+      lastTime.value = now;
+    };
+
+    const animate = () => {
+      if (!video) return;
+      // smooth towards targetRate
+      const current = video.playbackRate || 1;
+      const next = current + (targetRate.value - current) * 0.12; // smoothing (lerp)
+      video.playbackRate = Number(next.toFixed(3));
+      rafId = requestAnimationFrame(animate);
+    };
+
+    // reset target rate slowly when no scroll activity
+    let idleTimer = null;
+    const resetIdle = () => {
+      if (idleTimer) clearTimeout(idleTimer);
+      idleTimer = setTimeout(() => {
+        targetRate.value = 1;
+      }, 250);
+    };
+
+    const scrollHandler = () => {
+      onScroll();
+      resetIdle();
+    };
+    window.addEventListener("scroll", scrollHandler, { passive: true });
+
+    // start animation loop
+    rafId = requestAnimationFrame(animate);
+
+    return () => {
+      if (rafId) cancelAnimationFrame(rafId);
+      window.removeEventListener("scroll", scrollHandler);
+      if (idleTimer) clearTimeout(idleTimer);
+    };
+  }, []);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -60,7 +122,25 @@ function HomePage() {
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <title>Zenoverse HomePage</title>
 
-      <div className="flex flex-wrap items-center justify-center gap-6 min-h-screen w-full box-border px-4 py-0 bg-gradient-to-br from-[#070838] to-[#1c1a44]">
+      {/* Fixed background video covering the viewport */}
+      <video
+        ref={videoRef}
+        src="/video2.mp4"
+        muted
+        autoPlay
+        loop
+        playsInline
+        className="pointer-events-none fixed inset-0 w-full h-full object-cover -z-20"
+        style={{
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          objectFit: 'cover'
+        }}
+      />
+
+      <div className="flex flex-wrap items-center justify-center gap-6 min-h-screen w-full box-border px-4 py-0 relative z-10">
         <div className="flex items-center justify-center flex-shrink-0">
           <img
             src="zenoverse_logo.png"
@@ -75,10 +155,10 @@ function HomePage() {
           />
         </div>
         <div className="flex flex-col items-center justify-center max-w-xl text-center mx-0">
-          <h1 className="text-white text-3xl md:text-4xl font-bold mb-3">
+          <h1 className="text-zinc-800 text-3xl md:text-4xl font-bold mb-3">
             Zenoverse
           </h1>
-          <p className="text-[#e0e0ff] text-lg md:text-xl leading-relaxed">
+          <p className="text-zinc-800 text-lg md:text-xl leading-relaxed">
             Zenoverse empowers you to transform your own constellation images
             into unique, mintable NFTs. Simply upload your stargazing photos,
             and our advanced AI model will analyze and recognize the
@@ -89,7 +169,7 @@ function HomePage() {
         </div>
       </div>
 
-      <div className="flex flex-col items-center py-6 px-2 sm:px-4 mt-6 w-full bg-[#1c1a44]">
+      <div className="flex flex-col items-center py-6 px-2 sm:px-4 mt-6 w-full bg-transparent min-h-screen relative z-10">
         {/* <form
           className="flex flex-col items-center gap-4 w-full max-w-xl"
           id="image-upload-form"
@@ -131,10 +211,10 @@ function HomePage() {
             className="mt-4 px-6 sm:px-8 py-2 sm:py-3 border-2 border-[#7407b8] rounded-full bg-gradient-to-r from-[#7407b8] to-[#428cff] text-white text-base sm:text-lg tracking-wider shadow-[0_0_20px_#7407b8,0_0_6px_#fff2] transition-all duration-300 cursor-pointer hover:-translate-y-0.5 hover:from-[#428cff] hover:to-[#7407b8]"
           />
         </form> */}
-        <VerificationForm/>
+        <VerificationForm />
       </div>
 
-      <div className="flex flex-col items-center my-12">
+      <div className="flex flex-col items-center my-12 min-h-screen relative z-10">
         <h1 className="text-2xl md:text-3xl font-bold text-white mb-4 text-center">
           Other SoftCom Projects
         </h1>
