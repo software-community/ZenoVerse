@@ -183,11 +183,15 @@ const VerificationForm = () => {
               <select
                 value={selectedConstellation}
                 onChange={(e) => setSelectedConstellation(e.target.value)}
-                className="w-full p-3 rounded-xl bg-white/10 border border-white/10 text-white focus:outline-none"
+                className="w-full p-3 rounded-xl bg-white/10 border border-white/10 text-white focus:outline-none [&>option]:text-black [&>option]:bg-white"
+                style={{
+                  color: 'white',
+                  backgroundColor: 'rgba(255, 255, 255, 0.1)'
+                }}
               >
-                <option value="">-- Select --</option>
+                <option value="" style={{ color: 'black', backgroundColor: 'white' }}>-- Select --</option>
                 {constellations.map((name) => (
-                  <option key={name} value={name}>
+                  <option key={name} value={name} style={{ color: 'black', backgroundColor: 'white' }}>
                     {name}
                   </option>
                 ))}
