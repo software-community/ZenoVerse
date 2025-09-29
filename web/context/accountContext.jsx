@@ -7,6 +7,63 @@ import { getUserNFTMetadata } from "../lib/contractActions";
 export const accountContext = createContext();
 
 export const AccountProvider = ({ children }) => {
+  const demoNfts = [
+    {
+      tokenId: "001",
+      chain: "Ethereum",
+      price: "2.15 ETH",
+      metadata: {
+        name: "Celestial Dragon",
+        image:
+          "https://ipfs.io/ipfs/QmXoYJk34abcd1234efgh5678ijklmno/CelestialDragon.png",
+        confidence: 0.92,
+      },
+    },
+    {
+      tokenId: "002",
+      chain: "Polygon",
+      price: "750 MATIC",
+      metadata: {
+        name: "Cyber Samurai",
+        image:
+          "https://images.unsplash.com/photo-1622495892875-d9f2dfc8dbb7?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+        confidence: 0.87,
+      },
+    },
+    {
+      tokenId: "003",
+      chain: "Ethereum",
+      price: "0.89 ETH",
+      metadata: {
+        name: "Pixel Alien",
+        image:
+          "https://ipfs.io/ipfs/QmYhR9x41xpix3abcd5678Alien/PixelAlien.png",
+        confidence: 0.76,
+      },
+    },
+    {
+      tokenId: "004",
+      chain: "Solana",
+      price: "45 SOL",
+      metadata: {
+        name: "Neon Panther",
+        image:
+          "https://images.unsplash.com/photo-1612831455542-6370e8e8c0d6?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+        confidence: 0.81,
+      },
+    },
+    {
+      tokenId: "005",
+      chain: "Ethereum",
+      price: "5.00 ETH",
+      metadata: {
+        name: "Astral Goddess",
+        image: "https://ipfs.io/ipfs/Qmbcdef1234567AstralGoddess.png",
+        confidence: 0.95,
+      },
+    },
+  ];
+
   // State for connected wallet address
   const [account, setAccount] = useState(null);
   // State for smart contract instance

@@ -2,9 +2,7 @@
 
 @tailwind utilities;
 
-body {
-  background: #070838;
-}
+
 
 @keyframes shimmer {
   0% {

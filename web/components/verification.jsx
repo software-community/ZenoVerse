@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 
 const VerificationForm = () => {
   const [selectedImage, setSelectedImage] = useState(null);
@@ -12,18 +12,18 @@ const VerificationForm = () => {
   const [userAddress, setUserAddress] = useState("");
 
   const constellations = [
-  "Aries",
-  "Taurus",
-  "Gemini",
-  "Cancer",
-  "Leo",
-  "Virgo",
-  "Libra",
-  "Scorpius",
-  "Sagittarius",
-  "Capricornus",
-  "Aquarius",
-  "Pisces", 
+    "Aries",
+    "Taurus",
+    "Gemini",
+    "Cancer",
+    "Leo",
+    "Virgo",
+    "Libra",
+    "Scorpius",
+    "Sagittarius",
+    "Capricornus",
+    "Aquarius",
+    "Pisces",
   ];
 
   // Fetch user's location
@@ -68,7 +68,7 @@ const VerificationForm = () => {
       await verifyImage(e.target.files[0]);
     }
   };
-// Function to verify the image
+  // Function to verify the image
   const verifyImage = async (imageFile = selectedImage) => {
     if (!imageFile) return;
     if (!selectedConstellation) {
@@ -88,7 +88,7 @@ const VerificationForm = () => {
       formData.append("timestamp", new Date().toISOString());
       formData.append("userAddress", userAddress);
 
-      console.log("Submitting form data:")
+      console.log("Submitting form data:");
       const response = await fetch("/api/validate", {
         method: "POST",
         body: formData,
@@ -127,40 +127,41 @@ const VerificationForm = () => {
     setVerificationResult(null);
   };
 
-const formatAddress = (addr) => addr ? `${addr.slice(0, 6)}...${addr.slice(-4)}` : "Not Connected";
+  const formatAddress = (addr) =>
+    addr ? `${addr.slice(0, 6)}...${addr.slice(-4)}` : "Not Connected";
 
   return (
     <>
-      <div className="min-h-screen bg-gradient-to-br from-[#0b0b2b] to-[#1C1A44] py-12 px-4 text-white">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-10">
-            <h1 className="text-5xl md:text-6xl font-extrabold bg-gradient-to-r from-[#7407b8] to-[#428cff] bg-clip-text text-transparent">
-              🪐 Image Verification
+      <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-8 text-white flex flex-col justify-center">
+        <div className="max-w-4xl sm:max-w-5xl mx-auto w-full">
+          <div className="text-center mb-8 px-4 sm:px-6">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-white/30 drop-shadow-lg leading-tight">
+              Image Verification
             </h1>
-            <p className="text-white/70 mt-3 text-lg">
+            <p className="text-white/90 mt-4 text-base md:text-lg max-w-2xl mx-auto drop-shadow-md">
               Upload a constellation image to verify its authenticity
             </p>
-            <div className="w-24 h-1 bg-gradient-to-r from-[#7407b8] to-[#428cff] mx-auto mt-4 rounded-full" />
+            <div className="w-28 h-1 bg-gradient-to-r from-[#7407b8] to-[#428cff] mx-auto mt-6 rounded-full shadow-lg" />
           </div>
 
-          <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl shadow-2xl overflow-hidden p-8 space-y-6">
+          <div className="p-4 sm:p-8 space-y-6">
             {selectedImage ? (
               <div className="rounded-2xl overflow-hidden shadow-lg border border-white/10">
                 <img
                   src={URL.createObjectURL(selectedImage)}
                   alt="Selected"
-                  className="w-full h-72 object-cover rounded-xl"
+                  className="w-full h-56 sm:h-72 md:h-96 object-cover rounded-xl"
                 />
               </div>
             ) : (
-              <div className="flex items-center justify-center h-72 rounded-2xl bg-white/10 border border-white/10 text-white/50 text-xl">
+              <div className="flex items-center justify-center h-56 sm:h-72 rounded-2xl bg-black/20 border border-white/20 text-white/70 text-lg sm:text-xl backdrop-blur-sm px-4 text-center">
                 Upload an image to preview it here
               </div>
             )}
 
             {/* File Info */}
             {selectedImage && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 bg-white/5 border border-white/10 p-6 rounded-xl text-white/80">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 bg-black/20 border border-white/20 p-6 rounded-xl text-white/90 backdrop-blur-sm">
                 <div>
                   <p className="text-sm text-white/50">Filename</p>
                   <p className="font-medium truncate">{selectedImage.name}</p>
@@ -175,12 +176,13 @@ const formatAddress = (addr) => addr ? `${addr.slice(0, 6)}...${addr.slice(-4)}`
             )}
 
             {/* Select Constellation */}
-            <div className="text-black/80">
-              <label className="block mb-2 text-sm text-white/60">Select Constellation</label>
+            <div>
+              <label className="block mb-2 text-sm text-white">Select Constellation</label>
               <select
                 value={selectedConstellation}
                 onChange={(e) => setSelectedConstellation(e.target.value)}
-                className="w-full p-3 rounded-xl bg-white/10 border border-white/10 text-black focus:outline-none"
+                className="w-full p-3 rounded-xl bg-white border border-white/10 text-purple-700 focus:outline-none"
+                aria-label="Select constellation"
               >
                 <option value="">-- Select --</option>
                 {constellations.map((name) => (
@@ -191,33 +193,23 @@ const formatAddress = (addr) => addr ? `${addr.slice(0, 6)}...${addr.slice(-4)}`
 
             {/* Upload Button */}
             <label className="block cursor-pointer">
-              <div className="w-full text-center py-4 text-lg font-semibold rounded-full bg-gradient-to-r from-[#7407b8] to-[#428cff] shadow-[0_0_15px_#7407b8] hover:from-[#428cff] hover:to-[#7407b8] hover:shadow-[0_0_25px_#7407b8] transition-all duration-300">
+              <div className="w-full text-center py-3 sm:py-4 text-base sm:text-lg font-semibold rounded-full bg-gradient-to-r from-[#7407b8] to-[#428cff] shadow-[0_0_15px_#7407b8] hover:from-[#428cff] hover:to-[#7407b8] hover:shadow-[0_0_25px_#7407b8] transition-all duration-300">
                 {selectedImage ? "Change Image" : "Upload & Verify Image"}
               </div>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
-                className="hidden"
-              />
+              <input type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
             </label>
 
             {/* Result */}
             {verificationResult && (
-              <div className="mt-6 bg-white/10 border border-white/10 p-6 rounded-xl text-center text-white">
-                <div className="text-4xl mb-2">✅</div>
-                <h3 className="text-2xl font-bold mb-1">Verified Successfully</h3>
-                <p className="text-white/70 text-sm">
-                  At: {new Date(verificationResult.timestamp).toLocaleString()}
-                </p>
-                <p className="text-sm text-white/70 mt-2">Constellation: {verificationResult.constellation}</p>
-                <p className="text-xs text-white/40">Lat: {verificationResult.latitude}, Lon: {verificationResult.longitude}</p>
-                <p className="text-xs text-white/40">Wallet: {formatAddress(verificationResult.userAddress)}</p>
-                <p className="text-white/40 text-xs mt-1">IPFS: {verificationResult.ipfsHash}</p>
-                <a
-                  href="/nftcollection"
-                  className="mt-4 inline-block bg-gradient-to-r from-[#7407b8] to-[#428cff] px-6 py-3 rounded-full text-white font-semibold shadow-[0_0_15px_#7407b8] hover:shadow-[0_0_25px_#7407b8] hover:scale-105 transition-all"
-                >
+              <div className="mt-6 bg-black/20 border border-white/20 p-6 rounded-xl text-center text-white backdrop-blur-sm">
+                <div className="text-3xl sm:text-4xl mb-2">✅</div>
+                <h3 className="text-xl sm:text-2xl font-bold mb-1">Verified Successfully</h3>
+                <p className="text-white/70 text-sm sm:text-base">At: {new Date(verificationResult.timestamp).toLocaleString()}</p>
+                <p className="text-sm sm:text-base text-white/70 mt-2">Constellation: {verificationResult.constellation}</p>
+                <p className="text-xs sm:text-sm text-white/40">Lat: {verificationResult.latitude}, Lon: {verificationResult.longitude}</p>
+                <p className="text-xs sm:text-sm text-white/40">Wallet: {formatAddress(verificationResult.userAddress)}</p>
+                <p className="text-white/40 text-xs sm:text-sm mt-1">IPFS: {verificationResult.ipfsHash}</p>
+                <a href="/nftcollection" className="mt-4 inline-block bg-gradient-to-r from-[#7407b8] to-[#428cff] px-5 py-2 sm:px-6 sm:py-3 rounded-full text-white font-semibold shadow-[0_0_15px_#7407b8] hover:shadow-[0_0_25px_#7407b8] hover:scale-105 transition-all">
                   🚀 View in NFT Collection
                 </a>
               </div>
@@ -229,10 +221,10 @@ const formatAddress = (addr) => addr ? `${addr.slice(0, 6)}...${addr.slice(-4)}`
       {/* Loading Popup */}
       {showLoadingPopup && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50">
-          <div className="bg-white/10 border border-white/10 rounded-2xl p-8 text-white text-center shadow-xl max-w-sm w-full">
+          <div className="bg-black/40 border border-white/30 rounded-2xl p-8 text-white text-center shadow-xl max-w-sm w-full backdrop-blur-md">
             <div className="w-14 h-14 border-4 border-[#428cff] rounded-full animate-spin mx-auto mb-4 border-t-[#7407b8]" />
             <h3 className="text-xl font-semibold mb-2">Verifying...</h3>
-            <p className="text-white/60">Analyzing constellation pattern</p>
+            <p className="text-white/80">Analyzing constellation pattern</p>
           </div>
         </div>
       )}
@@ -240,7 +232,7 @@ const formatAddress = (addr) => addr ? `${addr.slice(0, 6)}...${addr.slice(-4)}`
       {/* Failure Popup */}
       {showFailurePopup && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50">
-          <div className="bg-white/10 border border-red-400 rounded-2xl p-8 text-white text-center shadow-xl max-w-sm w-full">
+          <div className="bg-black/40 border border-red-400/50 rounded-2xl p-8 text-white text-center shadow-xl max-w-sm w-full backdrop-blur-md">
             <div className="text-5xl mb-3">❌</div>
             <h3 className="text-2xl font-bold mb-2">Verification Failed</h3>
             <p className="text-red-300 mb-4 text-sm">

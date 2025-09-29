@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { AccountProvider } from "@/context/accountContext";
+import MouseEffect from "@/components/MouseEffect";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,14 +24,17 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-      <AccountProvider>
-        <Navbar />
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
+        <AccountProvider>
+          <Navbar />
           <main className="min-h-screen">
             {children}
+            <MouseEffect />
           </main>
-        <Footer />
-       </AccountProvider>
+          <Footer />
+        </AccountProvider>
       </body>
     </html>
   );

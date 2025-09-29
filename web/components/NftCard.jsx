@@ -49,7 +49,7 @@ const NftCard = ({ nft }) => {
   return (
     <div className="group">
       <div
-        className="relative overflow-hidden rounded-xl bg-white shadow-card hover:shadow-card-hover cursor-pointer transition-all duration-300 hover:-translate-y-1"
+        className="relative overflow-hidden rounded-xl bg-white shadow-card hover:shadow-card-hover cursor-pointer transition-all duration-300 hover:-translate-y-1 mx-4 my-6"
         onClick={handleClick}
         role="button"
         tabIndex={0}
