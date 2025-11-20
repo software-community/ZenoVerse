@@ -2,13 +2,14 @@ import { NextResponse } from "next/server";
 import os from "os";
 import { classifyImage } from "@/lib/cnnClient";
 import { isVisible } from "@/lib/visibilityCheck";
-import { checkImageHash } from "@/lib/imageHash"; // ✅ updated import
+import { checkImageHash } from "@/lib/imageHash";
 import { uploadMetadataToIPFS } from "@/lib/ipfs";
 import { mintObservation } from "@/lib/mintNFT";
 import { logValidation } from "@/lib/logValidation";
 import { writeFile, unlink } from "fs/promises";
 import path from "path";
 import { randomUUID } from "crypto";
+import sharp from "sharp"; // <-- Added for image resizing
 
 export const dynamic = "force-dynamic"; // disable edge runtime (needed for fs & formData)
 
@@ -24,14 +25,14 @@ export async function POST(req) {
 
   const logEntry = {
     imageBase64: imageFile ? await imageFile.text() : null,
-    imageHash: "", // will be filled after processing
+    imageHash: "",
     geolocation: {
       lat: parseFloat(latitude),
       lng: parseFloat(longitude),
     },
     time: new Date(timestamp).toISOString(),
     constellation: "",
-    confidenceScore: 0.92, // default placeholder
+    confidenceScore: 0.92,
     isValid: false,
     reason: "",
     ipfsMetadataUri: "",
@@ -56,6 +57,7 @@ export async function POST(req) {
   }
 
   let tempFilePath = "";
+  let resizedFilePath = "";
   try {
     // Save image to temp file
     const bytes = await imageFile.arrayBuffer();
@@ -64,8 +66,14 @@ export async function POST(req) {
     tempFilePath = path.join(tempDir, `${randomUUID()}.jpg`);
     await writeFile(tempFilePath, buffer);
 
-    // 3. Hash Generation + Duplicate Check + Save
-    const hashResult = await checkImageHash(tempFilePath);
+    // Resize image to 224x224 for CNN
+    resizedFilePath = path.join(tempDir, `${randomUUID()}_224.jpg`);
+    await sharp(tempFilePath)
+      .resize(224, 224)
+      .toFile(resizedFilePath);
+
+    // Hash Generation + Duplicate Check + Save (use resized image)
+    const hashResult = await checkImageHash(resizedFilePath);
     logEntry.imageHash = hashResult.hash;
 
     if (hashResult.isDuplicate) {
@@ -77,8 +85,9 @@ export async function POST(req) {
         { status: 400 }
       );
     }
-    // 1. CNN Classification
-    const cnnPredictionData = await classifyImage(tempFilePath);
+
+    // CNN Classification (use resized image)
+    const cnnPredictionData = await classifyImage(resizedFilePath);
     const cnnPrediction = cnnPredictionData.constellation;
     const cnnConfidence = cnnPredictionData.confidenceScore;
 
@@ -97,8 +106,18 @@ export async function POST(req) {
     }
 
     if (cnnPrediction.toLowerCase() !== userConstellation.toLowerCase()) {
-      logEntry.reason = "Constellation mismatch. User claim: " + userConstellation + ", CNN prediction: " + cnnPrediction;
-      console.warn("Validation failed: Constellation mismatch. User claim: ", userConstellation, " CNN prediction: ", cnnPrediction, logEntry);
+      logEntry.reason =
+        "Constellation mismatch. User claim: " +
+        userConstellation +
+        ", CNN prediction: " +
+        cnnPrediction;
+      console.warn(
+        "Validation failed: Constellation mismatch. User claim: ",
+        userConstellation,
+        " CNN prediction: ",
+        cnnPrediction,
+        logEntry
+      );
       await logValidation(logEntry);
       return NextResponse.json(
         { validated: false, reason: logEntry.reason },
@@ -106,7 +125,7 @@ export async function POST(req) {
       );
     }
 
-    // 2. Visibility Check
+    // Visibility Check
     const visible = await isVisible({
       constellation: userConstellation,
       latitude,
@@ -116,7 +135,10 @@ export async function POST(req) {
 
     if (!visible) {
       logEntry.reason = "Constellation not visible at that location/time";
-      console.warn("Validation failed: Constellation not visible at timestamp:", timestamp);
+      console.warn(
+        "Validation failed: Constellation not visible at timestamp:",
+        timestamp
+      );
       await logValidation(logEntry);
       return NextResponse.json(
         { validated: false, reason: logEntry.reason },
@@ -124,7 +146,7 @@ export async function POST(req) {
       );
     }
 
-    // 4. Upload metadata to IPFS
+    // Upload metadata to IPFS (use original image for NFT)
     const metadata = {
       name: userConstellation,
       description: `A beautiful representation of the ${userConstellation} constellation.`,
@@ -139,7 +161,7 @@ export async function POST(req) {
     const tokenURI = await uploadMetadataToIPFS(metadata);
     logEntry.ipfsMetadataUri = tokenURI;
 
-    // 5. Mint NFT
+    // Mint NFT
     const tx = await mintObservation(userAddress, tokenURI);
     logEntry.txnHash = tx.hash;
     logEntry.isValid = true;
@@ -165,6 +187,13 @@ export async function POST(req) {
         await unlink(tempFilePath);
       } catch (cleanupErr) {
         console.warn("Failed to delete temp file:", cleanupErr.message);
+      }
+    }
+    if (resizedFilePath) {
+      try {
+        await unlink(resizedFilePath);
+      } catch (cleanupErr) {
+        console.warn("Failed to delete resized temp file:", cleanupErr.message);
       }
     }
   }
