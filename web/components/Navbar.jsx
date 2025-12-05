@@ -65,7 +65,7 @@ function Navbar() {
         {[
           { href: "/", label: "Home" },
           { href: "/nftcollection", label: "NFT Collection" },
-          { href: "https://iitrpr.ac.in/bost/softcom", label: "About Us" },
+          { href: "https://iitrpr.ac.in/bost", label: "About Us" },
         ].map((link) => (
           <li key={link.href}>
             <a

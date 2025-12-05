@@ -19,11 +19,11 @@ const validationSchema = new mongoose.Schema({
   },
   constellation: {
     type: String,
-    required: true,
+    required: false,
   },
   confidenceScore: {
     type: Number,
-    required: true,
+    required: false,
   },
   isValid: {
     type: Boolean,

@@ -16,5 +16,8 @@ export async function classifyImage(imagePath) {
   });
 
   console.log(result.data);
+  if (result.data[0].error == 'Only constellation or deep sky images are allowed.') {
+    throw new Error('Only constellation or deep sky images are allowed.');
+  }
   return { constellation: result.data[0].predicted_class, confidenceScore: result.data[0].confidence };
 }

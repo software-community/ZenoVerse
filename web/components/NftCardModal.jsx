@@ -75,11 +75,11 @@ const NftCardModal = ({ nft, onClose }) => {
         </button>
         {/* Left: Image */}
         <div className="bg-neutral-100 flex items-center justify-center p-5">
-          <img
-            src={getImageSrc(nft?.metadata?.image)}
-            alt={nft?.metadata?.name}
-            className="max-h-[80vh] w-full object-contain rounded-lg"
-          />
+            <img
+              src={getImageSrc(nft.metadata.image)}
+              alt={nft.metadata.name}
+              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+            />
         </div>
 
         {/* Right: Details */}
