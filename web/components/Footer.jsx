@@ -18,7 +18,7 @@ const Footer = () => {
           </div>
 
           <p className="text-base text-white/70 max-w-md">
-            Built by the SoftCom team at IIT Ropar. Discover, collect and trade
+            Brought to you by SoftCom in collaboration with Iota Cluster, IIT Ropar. Discover, collect and trade
             unique constellation NFTs powered by AI.
           </p>
         </div>
@@ -48,7 +48,7 @@ const Footer = () => {
 
           <div className="text-base text-white/70 text-right">
             <div>Contact: <a className="text-white/90 hover:text-[#7407b8]" href="mailto:softcom@iitrpr.ac.in">softcom@iitrpr.ac.in</a></div>
-            <div className="text-sm text-white/50 mt-2">Made with <span className="text-red-400">♥</span> by <Link href="/softcom" className="text-[#7407b8]">SoftCom</Link></div>
+            <div className="text-sm text-white/50 mt-2">Made with <span className="text-red-400">♥</span> by <Link href="https://www.iitrpr.ac.in/bost/softcom" target="_blank" rel="noopener noreferrer" className="text-[#7407b8]">SoftCom</Link> and <Link href="https://www.iitrpr.ac.in/bost/iotacluster" target="_blank" rel="noopener noreferrer" className="text-[#7407b8]">Iota Cluster</Link></div>
           </div>
         </div>
       </div>

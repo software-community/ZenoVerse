@@ -165,7 +165,7 @@ function HomePage() {
             <h1 className="bg-gradient-to-r from-[#7407b8] to-[#428cff] bg-clip-text text-transparent text-3xl md:text-4xl font-bold mb-3">
               Zenoverse
             </h1>
-            <p className="text-purple-800 text-base sm:text-lg md:text-xl leading-relaxed">
+            <p className="text-white text-base sm:text-lg md:text-xl leading-relaxed">
               Zenoverse empowers you to transform your own constellation images
               into unique, mintable NFTs. Simply upload your stargazing photos,
               and our advanced AI model will analyze and recognize the
