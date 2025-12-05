@@ -22,6 +22,20 @@ export async function POST(req) {
   const timestamp = formData.get("timestamp");
   const userAddress = formData.get("userAddress");
 
+  if (
+    !imageFile ||
+    !userConstellation ||
+    !latitude ||
+    !longitude ||
+    !timestamp ||
+    !userAddress
+  ) {
+    return NextResponse.json(
+      { validated: false, reason: "Missing required fields" },
+      { status: 400 }
+    );
+  }
+
   const logEntry = {
     imageBase64: imageFile ? await imageFile.text() : null,
     imageHash: "", // will be filled after processing
@@ -31,29 +45,12 @@ export async function POST(req) {
     },
     time: new Date(timestamp).toISOString(),
     constellation: "",
-    confidenceScore: 0.92, // default placeholder
+    confidenceScore: 0, // default placeholder
     isValid: false,
     reason: "",
     ipfsMetadataUri: "",
     txnHash: "",
   };
-
-  if (
-    !imageFile ||
-    !userConstellation ||
-    !latitude ||
-    !longitude ||
-    !timestamp ||
-    !userAddress
-  ) {
-    logEntry.reason = "Missing required fields";
-    console.warn("Validation failed: Missing required fields", logEntry);
-    await logValidation(logEntry);
-    return NextResponse.json(
-      { validated: false, reason: logEntry.reason },
-      { status: 400 }
-    );
-  }
 
   let tempFilePath = "";
   try {
@@ -64,31 +61,59 @@ export async function POST(req) {
     tempFilePath = path.join(tempDir, `${randomUUID()}.jpg`);
     await writeFile(tempFilePath, buffer);
 
-    // 3. Hash Generation + Duplicate Check + Save
+    // Hash Generation + Duplicate Check + Save
     const hashResult = await checkImageHash(tempFilePath);
     logEntry.imageHash = hashResult.hash;
 
     if (hashResult.isDuplicate) {
       logEntry.reason = "Duplicate image detected";
-      console.warn("Validation failed: Duplicate image", logEntry);
+      console.warn("Validation failed: Duplicate image");
       await logValidation(logEntry);
       return NextResponse.json(
         { validated: false, reason: logEntry.reason },
         { status: 400 }
       );
     }
-    // 1. CNN Classification
-    const cnnPredictionData = await classifyImage(tempFilePath);
-    const cnnPrediction = cnnPredictionData.constellation;
-    const cnnConfidence = cnnPredictionData.confidenceScore;
+    // CNN Classification
+    try {
+      const cnnPredictionData = await classifyImage(tempFilePath);
+      if (!cnnPredictionData.confidenceScore || !cnnPredictionData.constellation) {
+        logEntry.reason = "CNN classification returned invalid data";
+        console.warn("Validation failed: CNN returned invalid data", cnnPredictionData);
+        await logValidation(logEntry);
+        return NextResponse.json(
+          { validated: false, reason: logEntry.reason },
+          { status: 400 }
+        );
+      }
+      const cnnPrediction = cnnPredictionData.constellation;
+      const cnnConfidence = cnnPredictionData.confidenceScore;
+      logEntry.constellation = cnnPrediction;
+      logEntry.confidenceScore = cnnConfidence;
 
-    logEntry.constellation = cnnPrediction;
-    logEntry.confidenceScore = cnnConfidence;
+      // if confidence < threshold of 70%, reject
+      if (cnnConfidence < 0.7) {
+        logEntry.reason = "No constellation or low confidence: " + cnnConfidence;
+        console.warn("Validation failed: Low confidence score:", cnnConfidence);
+        await logValidation(logEntry);
+        return NextResponse.json(
+          { validated: false, reason: logEntry.reason },
+          { status: 400 }
+        );
+      }
 
-    // if confidence < threshold of 70%, reject
-    if (cnnConfidence < 0.7) {
-      logEntry.reason = "No constellation or low confidence: " + cnnConfidence;
-      console.warn("Validation failed: Low confidence score:", cnnConfidence);
+      if (cnnPrediction.toLowerCase() !== userConstellation.toLowerCase()) {
+        logEntry.reason = "Constellation mismatch. User claim: " + userConstellation + ", CNN prediction: " + cnnPrediction;
+        console.warn("Validation failed: Constellation mismatch. User claim: ", userConstellation, " CNN prediction: ", cnnPrediction, logEntry);
+        await logValidation(logEntry);
+        return NextResponse.json(
+          { validated: false, reason: logEntry.reason },
+          { status: 400 }
+        );
+      }
+    } catch (cnnError) {
+      logEntry.reason = cnnError.message || "CNN classification failed";
+      console.warn("Validation failed: CNN classification error:", cnnError.message);
       await logValidation(logEntry);
       return NextResponse.json(
         { validated: false, reason: logEntry.reason },
@@ -96,9 +121,28 @@ export async function POST(req) {
       );
     }
 
-    if (cnnPrediction.toLowerCase() !== userConstellation.toLowerCase()) {
-      logEntry.reason = "Constellation mismatch. User claim: " + userConstellation + ", CNN prediction: " + cnnPrediction;
-      console.warn("Validation failed: Constellation mismatch. User claim: ", userConstellation, " CNN prediction: ", cnnPrediction, logEntry);
+
+    // Visibility Check
+    try {
+      const visible = await isVisible({
+        constellation: userConstellation,
+        latitude,
+        longitude,
+        timestamp,
+      });
+
+      if (!visible) {
+        logEntry.reason = "Constellation not visible at that location/time";
+        console.warn("Validation failed: Constellation not visible at timestamp:", timestamp);
+        await logValidation(logEntry);
+        return NextResponse.json(
+          { validated: false, reason: logEntry.reason },
+          { status: 400 }
+        );
+      }
+    } catch (visibilityError) {
+      logEntry.reason = "Visibility check failed: " + visibilityError.message;
+      console.warn("Validation failed: Visibility check error:", visibilityError.message);
       await logValidation(logEntry);
       return NextResponse.json(
         { validated: false, reason: logEntry.reason },
@@ -106,23 +150,6 @@ export async function POST(req) {
       );
     }
 
-    // 2. Visibility Check
-    const visible = await isVisible({
-      constellation: userConstellation,
-      latitude,
-      longitude,
-      timestamp,
-    });
-
-    if (!visible) {
-      logEntry.reason = "Constellation not visible at that location/time";
-      console.warn("Validation failed: Constellation not visible at timestamp:", timestamp);
-      await logValidation(logEntry);
-      return NextResponse.json(
-        { validated: false, reason: logEntry.reason },
-        { status: 400 }
-      );
-    }
 
     // 4. Upload metadata to IPFS
     const metadata = {
@@ -132,7 +159,7 @@ export async function POST(req) {
       latitude,
       longitude,
       timestamp,
-      confidence: cnnConfidence,
+      confidence: logEntry.confidenceScore,
       image: `data:image/jpeg;base64,${buffer.toString("base64")}`,
     };
 

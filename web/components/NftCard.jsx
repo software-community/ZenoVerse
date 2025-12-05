@@ -105,7 +105,7 @@
 
 // export default NftCard;
 "use client"
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import NftCardModal from "./NftCardModal";
 
 // Helper to normalize image source (supports base64 strings and regular URLs)
@@ -147,80 +147,6 @@ const getImageSrc = (image) => {
 };
 
 // Constellation information database
-const constellationInfo = {
-  Aries: {
-    about: "The Ram constellation, representing the golden ram from Greek mythology. One of the zodiac constellations, symbolizing new beginnings and courage.",
-    stars: 66,
-    season: "Autumn/Winter",
-    brightness: "Alpha Arietis (Hamal)"
-  },
-  Taurus: {
-    about: "The Bull constellation, home to the famous Pleiades star cluster. In Greek mythology, represents Zeus disguised as a bull.",
-    stars: 223,
-    season: "Winter",
-    brightness: "Aldebaran (orange giant)"
-  },
-  Gemini: {
-    about: "The Twins constellation, representing Castor and Pollux from Greek mythology. Known for its bright twin stars.",
-    stars: 85,
-    season: "Winter/Spring",
-    brightness: "Pollux & Castor"
-  },
-  Cancer: {
-    about: "The Crab constellation, the faintest of all zodiac constellations. Contains the famous Beehive Cluster (M44).",
-    stars: 83,
-    season: "Winter/Spring",
-    brightness: "Beta Cancri (Tarf)"
-  },
-  Leo: {
-    about: "The Lion constellation, one of the most recognizable zodiac patterns. Represents the Nemean Lion from Greek mythology.",
-    stars: 96,
-    season: "Spring",
-    brightness: "Regulus (blue-white star)"
-  },
-  Virgo: {
-    about: "The Maiden constellation, largest of the zodiac constellations. Associated with harvest goddesses across many cultures.",
-    stars: 169,
-    season: "Spring/Summer",
-    brightness: "Spica (blue giant)"
-  },
-  Libra: {
-    about: "The Scales constellation, representing balance and justice. The only zodiac constellation symbolizing an inanimate object.",
-    stars: 83,
-    season: "Summer",
-    brightness: "Zubeneschamali"
-  },
-  Scorpius: {
-    about: "The Scorpion constellation, one of the most distinctive zodiac patterns. Features the bright red supergiant star Antares.",
-    stars: 157,
-    season: "Summer",
-    brightness: "Antares (red supergiant)"
-  },
-  Sagittarius: {
-    about: "The Archer constellation, pointing toward the galactic center. Rich in nebulae and star clusters, representing a centaur archer.",
-    stars: 186,
-    season: "Summer",
-    brightness: "Kaus Australis"
-  },
-  Capricornus: {
-    about: "The Sea-Goat constellation, a mythical creature with a goat's head and fish's tail. One of the faintest zodiac constellations.",
-    stars: 81,
-    season: "Summer/Autumn",
-    brightness: "Delta Capricorni (Deneb Algedi)"
-  },
-  Aquarius: {
-    about: "The Water Bearer constellation, one of the oldest recognized patterns. Represents a figure pouring water from a jar.",
-    stars: 165,
-    season: "Autumn",
-    brightness: "Beta Aquarii (Sadalsuud)"
-  },
-  Pisces: {
-    about: "The Fishes constellation, representing two fish tied together. Contains the vernal equinox point in modern astronomy.",
-    stars: 86,
-    season: "Autumn/Winter",
-    brightness: "Eta Piscium (Kullat Nunu)"
-  }
-};
 
 const NftCard = ({ nft }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -238,15 +164,6 @@ const NftCard = ({ nft }) => {
   const handleFlipBack = (e) => {
     e.stopPropagation();
     setIsFlipped(false);
-  };
-
-  // Get constellation info based on metadata
-  const constellationName = nft.metadata.constellation || nft.metadata.name;
-  const info = constellationInfo[constellationName] || {
-    about: nft.metadata.description || "A beautiful celestial constellation captured at your location.",
-    stars: Math.floor(Math.random() * 50 + 10),
-    season: ['Spring', 'Summer', 'Fall', 'Winter'][Math.floor(Math.random() * 4)],
-    brightness: "Various bright stars"
   };
 
   return (
@@ -353,7 +270,7 @@ const NftCard = ({ nft }) => {
             {/* Title */}
             <div className="text-center mt-2">
               <h3 className="text-2xl sm:text-3xl font-bold text-white drop-shadow-md">
-                {constellationName}
+                {nft.metadata.name}
               </h3>
               <div className="h-0.5 mt-1 bg-gradient-to-r from-transparent via-yellow-400/70 to-transparent"></div>
             </div>
@@ -364,7 +281,7 @@ const NftCard = ({ nft }) => {
                 <span className="text-xl">✨</span>
                 <div>
                   <h4 className="font-bold text-yellow-300 text-sm mb-1">Mythology</h4>
-                  <p className="text-white/90 text-sm leading-relaxed">{info.about}</p>
+                  <p className="text-white/90 text-sm leading-relaxed">{nft.metadata.description}</p>
                 </div>
               </div>
             </div>
@@ -375,9 +292,9 @@ const NftCard = ({ nft }) => {
               <div className="bg-black/35 backdrop-blur-sm rounded-xl p-4 border border-blue-400/20 text-center">
                 <span className="text-2xl">☀️</span>
                 <h4 className="font-bold text-blue-300 text-xs mt-2 mb-2">Sky Info</h4>
-                <div className="text-xl font-bold text-white">{info.stars}</div>
+                <div className="text-xl font-bold text-white">{63}</div>
                 <div className="text-xs text-white/70">stars</div>
-                <div className="text-xs text-white/60 mt-2">{info.season}</div>
+                <div className="text-xs text-white/60 mt-2">{"Winter"}</div>
               </div>
 
               {/* Capture Info */}
@@ -396,7 +313,7 @@ const NftCard = ({ nft }) => {
 
                 {nft.metadata.latitude && nft.metadata.longitude && (
                   <div className="text-xs text-white/60 mt-2">
-                    {nft.metadata.latitude.toFixed(1)}°, {nft.metadata.longitude.toFixed(1)}°
+                    {parseFloat(nft.metadata.latitude).toFixed(1)}°, {parseFloat(nft.metadata.longitude).toFixed(1)}°
                   </div>
                 )}
               </div>

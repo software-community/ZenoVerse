@@ -34,9 +34,9 @@ export async function getUserOwnedTokenIds() {
     console.error('No account or contract available');
     return [];
   }
-
+  
   try {
-
+    console.log("contract: ", contract)
     const tokenIds = await contract.getAllTokensByOwner(account);
     // Convert BigNumber[] to number[]
     return tokenIds.map(id => id.toNumber());
@@ -50,6 +50,12 @@ export async function getUserNFTMetadata(account, contract) {
   if (!account || !contract) {
     return; 
   }
+
+  console.log("contract: ", contract)
+  console.log(await provider.getNetwork());
+  const code = await provider.getCode(contract.target);
+  console.log("bytecode:", code);
+
 
   try {
     // 1. Get token IDs owned by user
