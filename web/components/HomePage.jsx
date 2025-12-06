@@ -2,40 +2,6 @@ import React, { useRef, useState, useEffect } from "react";
 import ProjectCard from "./ProjectCard";
 import VerificationForm from "./verification";
 
-const otherProjects = [
-  {
-    title: "BoST Portal",
-    description:
-      "The public website of the Board of Science and Technology (BoST), IIT Ropar....",
-    image: "/Bost logo.png",
-    status: "in_progress",
-    id: 1,
-    imageLink: {
-      href: "https://iitrpr.ac.in/bost/softcom/projects/bost-portal?id=668971e5827584596f7f4c55",
-    },
-  },
-  {
-    title: "Trader’s Arena",
-    description: "Admin Portal for FinCOM’s signature event: Trader’s Arena...",
-    image: "/Traders Arena.png",
-    status: "completed",
-    id: 2,
-    imageLink: {
-      href: "https://iitrpr.ac.in/bost/softcom/projects/trader-s-arena?id=66995c5ffd013a22f1887447",
-    },
-  },
-  {
-    title: "SkyConnect",
-    description:
-      "The easiest and safest network tunneling tool, made by IIT Ropar for the World!...",
-    image: "/skyconnect.webp",
-    status: "in_progress",
-    id: 3,
-    imageLink: {
-      href: "https://iitrpr.ac.in/bost/softcom/projects/skyconnect?id=67a52fe014bba142f3591b1c",
-    },
-  },
-];
 
 function HomePage() {
   const [previewSrc, setPreviewSrc] = useState("");
