@@ -46,6 +46,22 @@ export async function getUserOwnedTokenIds() {
   }
 };
 
+async function getCelestialData(name) {
+  if (!name) return null;
+  
+  try {
+    const observationRes = await fetch(`/api/getCelestialObservation?name=${encodeURIComponent(name)}`);
+    const observationData = await observationRes.json();
+    if (observationData.success) {
+      return observationData.data;
+    }
+    return null;
+  } catch (error) {
+    console.error("Error fetching celestial observation:", error);
+    return null;
+  }
+}
+
 export async function getUserNFTMetadata(account, contract) {
   if (!account || !contract) {
     return; 
@@ -79,11 +95,15 @@ export async function getUserNFTMetadata(account, contract) {
       const res = await fetch(url);
       const metadata = await res.json();
       console.log("Fetched metadata for token ID:", tokenId, metadata);
-
+      
+      // Fetch celestial observation data if metadata.name exists
+      const celestialObservationData = await getCelestialData(metadata?.name);
+      
       return {
         tokenId: tokenId.toString(),
         tokenURI,
-        metadata
+        metadata,
+        celestialObservationData
       };
     });
 

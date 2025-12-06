@@ -281,7 +281,7 @@ const NftCard = ({ nft }) => {
                 <span className="text-xl">✨</span>
                 <div>
                   <h4 className="font-bold text-yellow-300 text-sm mb-1">Mythology</h4>
-                  <p className="text-white/90 text-sm leading-relaxed">{nft.metadata.description}</p>
+                  <p className="text-white/90 text-sm leading-relaxed">{nft.celestialObservationData.mythology}</p>
                 </div>
               </div>
             </div>
@@ -292,9 +292,9 @@ const NftCard = ({ nft }) => {
               <div className="bg-black/35 backdrop-blur-sm rounded-xl p-4 border border-blue-400/20 text-center">
                 <span className="text-2xl">☀️</span>
                 <h4 className="font-bold text-blue-300 text-xs mt-2 mb-2">Sky Info</h4>
-                <div className="text-xl font-bold text-white">{63}</div>
+                <div className="text-xl font-bold text-white">{nft.celestialObservationData.stars}</div>
                 <div className="text-xs text-white/70">stars</div>
-                <div className="text-xs text-white/60 mt-2">{"Winter"}</div>
+                <div className="text-xs text-white/60 mt-2">{nft.celestialObservationData.season}</div>
               </div>
 
               {/* Capture Info */}
