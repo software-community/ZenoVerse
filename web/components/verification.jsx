@@ -86,6 +86,7 @@ const VerificationForm = () => {
       formData.append("latitude", latitude);
       formData.append("longitude", longitude);
       formData.append("timestamp", new Date().toISOString());
+      // formData.append("timestamp", "2025-12-04T20:00:55.242Z");
       formData.append("userAddress", userAddress);
 
       console.log("Submitting form data:");
