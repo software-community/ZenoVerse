@@ -14,10 +14,12 @@
     "axios": "^1.11.0",
     "dotenv": "^17.2.1",
     "ethers": "^6.14.4",
+    "groq-sdk": "^0.37.0",
     "mongoose": "^8.17.0",
     "next": "15.3.4",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "react-markdown": "^10.1.0"
   },
   "devDependencies": {
     "@gradio/client": "^1.17.0",

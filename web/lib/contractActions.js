@@ -97,8 +97,9 @@ export async function getUserNFTMetadata(account, contract) {
       console.log("Fetched metadata for token ID:", tokenId, metadata);
       
       // Fetch celestial observation data if metadata.name exists
-      const celestialObservationData = await getCelestialData(metadata?.name);
-      
+      const observations = await getCelestialData(metadata?.name);
+      console.log("Celestial Observation Data:", observations[0]);
+      const celestialObservationData = observations ? observations[0] : null;
       return {
         tokenId: tokenId.toString(),
         tokenURI,

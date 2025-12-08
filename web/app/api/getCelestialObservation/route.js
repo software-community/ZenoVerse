@@ -20,7 +20,7 @@ export async function GET(request) {
 
     // Query the database for observations matching the name
     const observations = await Celestial_Observation.find({
-      mythology: { $regex: name, $options: 'i' } // Case-insensitive search
+      name: { $regex: name, $options: 'i' } // Case-insensitive search
     });
     // Return the observations
     return NextResponse.json(
