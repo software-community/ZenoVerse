@@ -177,19 +177,32 @@ const VerificationForm = () => {
             )}
 
             {/* Select Constellation */}
-            <div>
-              <label className="block mb-2 text-sm text-white">Select Constellation</label>
-              <select
-                value={selectedConstellation}
-                onChange={(e) => setSelectedConstellation(e.target.value)}
-                className="w-full p-3 rounded-xl bg-white border border-white/10 text-purple-700 focus:outline-none"
-                aria-label="Select constellation"
-              >
-                <option value="">-- Select --</option>
-                {constellations.map((name) => (
-                  <option key={name} value={name}>{name}</option>
-                ))}
-              </select>
+            <div className="w-full mb-4 px-4 sm:px-0">
+              <label className="block mb-2 text-sm font-medium text-white/90">Select Constellation</label>
+              <div className="relative w-full max-w-full">
+                <select
+                  value={selectedConstellation}
+                  onChange={(e) => setSelectedConstellation(e.target.value)}
+                  className="w-full px-4 py-3 pr-10 text-white bg-gray-800/80 border border-white/20 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200 appearance-none"
+                  aria-label="Select constellation"
+                >
+                  <option value="" className="bg-gray-800 text-white">-- Select --</option>
+                  {constellations.map((name) => (
+                    <option 
+                      key={name} 
+                      value={name}
+                      className="bg-gray-800 text-white hover:bg-blue-600"
+                    >
+                      {name}
+                    </option>
+                  ))}
+                </select>
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-white/70">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
+              </div>
             </div>
 
             {/* Upload Button */}
@@ -201,20 +214,58 @@ const VerificationForm = () => {
             </label>
 
             {/* Result */}
-            {verificationResult && (
-              <div className="mt-6 bg-black/20 border border-white/20 p-6 rounded-xl text-center text-white backdrop-blur-sm">
-                <div className="text-3xl sm:text-4xl mb-2">✅</div>
-                <h3 className="text-xl sm:text-2xl font-bold mb-1">Verified Successfully</h3>
-                <p className="text-white/70 text-sm sm:text-base">At: {new Date(verificationResult.timestamp).toLocaleString()}</p>
-                <p className="text-sm sm:text-base text-white/70 mt-2">Constellation: {verificationResult.constellation}</p>
-                <p className="text-xs sm:text-sm text-white/40">Lat: {verificationResult.latitude}, Lon: {verificationResult.longitude}</p>
-                <p className="text-xs sm:text-sm text-white/40">Wallet: {formatAddress(verificationResult.userAddress)}</p>
-                <p className="text-white/40 text-xs sm:text-sm mt-1">IPFS: {verificationResult.ipfsHash}</p>
-                <a href="/nftcollection" className="mt-4 inline-block bg-gradient-to-r from-[#7407b8] to-[#428cff] px-5 py-2 sm:px-6 sm:py-3 rounded-full text-white font-semibold shadow-[0_0_15px_#7407b8] hover:shadow-[0_0_25px_#7407b8] hover:scale-105 transition-all">
-                  🚀 View in NFT Collection
-                </a>
-              </div>
-            )}
+{/* Result */}
+{verificationResult && (
+  <div className="w-full mt-6 bg-black/20 border border-white/20 p-4 sm:p-6 rounded-xl text-center text-white backdrop-blur-sm">
+    <div className="text-3xl sm:text-4xl mb-3">✅</div>
+    <h3 className="text-lg sm:text-2xl font-bold mb-2">Verified Successfully</h3>
+    <div className="space-y-2 text-sm sm:text-base">
+      <p className="text-white/80">
+        <span className="font-medium">Time:</span>{' '}
+        {new Date(verificationResult.timestamp).toLocaleString()}
+      </p>
+      <p className="text-white/80">
+        <span className="font-medium">Constellation:</span>{' '}
+        {verificationResult.constellation}
+      </p>
+      {verificationResult.confidence && (
+        <p className="text-white/80">
+          <span className="font-medium">Confidence:</span>{' '}
+          {verificationResult.confidence}%
+        </p>
+      )}
+    </div>
+    {verificationResult.ipfsHash && (
+      <div className="mt-4 pt-4 border-t border-white/10">
+        <p className="text-xs sm:text-sm text-white/60 mb-2">View on IPFS:</p>
+        <a
+          href={verificationResult.ipfsHash}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center justify-center px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-sm sm:text-base transition-colors"
+        >
+          <span className="truncate max-w-[200px] sm:max-w-none">
+            {verificationResult.ipfsHash}
+          </span>
+          <svg
+            className="w-4 h-4 ml-2"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+            />
+          </svg>
+        </a>
+      </div>
+    )}
+  </div>
+)}
           </div>
         </div>
       </div>
