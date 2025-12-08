@@ -15,6 +15,9 @@ export const AccountProvider = ({ children }) => {
 
   const [loading, setLoading] = useState(false);
 
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
+
+
   // State for NFTs
   const [NFTs, setNFTs] = useState([]);
 
