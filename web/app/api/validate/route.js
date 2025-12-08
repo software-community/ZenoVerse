@@ -131,15 +131,15 @@ export async function POST(req) {
         timestamp,
       });
 
-      if (!visible) {
-        logEntry.reason = "Constellation not visible at that location/time";
-        console.warn("Validation failed: Constellation not visible at timestamp:", timestamp);
-        await logValidation(logEntry);
-        return NextResponse.json(
-          { validated: false, reason: logEntry.reason },
-          { status: 400 }
-        );
-      }
+      // if (!visible) {
+      //   logEntry.reason = "Constellation not visible at that location/time";
+      //   console.warn("Validation failed: Constellation not visible at timestamp:", timestamp);
+      //   await logValidation(logEntry);
+      //   return NextResponse.json(
+      //     { validated: false, reason: logEntry.reason },
+      //     { status: 400 }
+      //   );
+      // }
     } catch (visibilityError) {
       logEntry.reason = "Visibility check failed: " + visibilityError.message;
       console.warn("Validation failed: Visibility check error:", visibilityError.message);

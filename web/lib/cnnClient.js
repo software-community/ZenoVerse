@@ -9,7 +9,7 @@ export async function classifyImage(imagePath) {
   // Convert Buffer to Blob (for Gradio client)
   const imageBlob = new Blob([buffer], { type: "image/jpeg" });
               
-  const client = await Client.connect("IotaCluster/ZenoVerse");
+  const client = await Client.connect("mockingjay-7/ZenoVerse");
   const result = await client.predict("/_on_predict", {
     image: imageBlob,
     temperature: 1.5,

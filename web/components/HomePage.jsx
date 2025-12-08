@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import ProjectCard from "./ProjectCard";
 import VerificationForm from "./verification";
+import ChatbotWidget from "./ChatbotWidget";
 
 
 function HomePage() {
@@ -8,7 +9,7 @@ function HomePage() {
   const previewRef = useRef(null);
   const videoRef = useRef(null);
   const verificationVideoRef = useRef(null);
-
+  
   useEffect(() => {
     const heroVideo = videoRef.current;
     const verificationVideo = verificationVideoRef.current;
@@ -208,7 +209,7 @@ function HomePage() {
           <VerificationForm />
         </div>
       </div>
-
+      <ChatbotWidget />
     </>
   );
 }
