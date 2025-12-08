@@ -2,6 +2,7 @@
 import React, { useContext, useEffect } from "react";
 import { accountContext } from "@/context/accountContext";
 import NFTCard from "@/components/NftCard";
+import ChatbotWidget from "@/components/ChatbotWidget";
 
 export default function NftCollectionPage() {
   const { NFTs, setNFTs } = useContext(accountContext);
@@ -97,6 +98,7 @@ export default function NftCollectionPage() {
           </div>
         )}
       </div>
+        <ChatbotWidget />
     </div>
   );
 }
