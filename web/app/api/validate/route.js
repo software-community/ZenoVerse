@@ -92,7 +92,7 @@ export async function POST(req) {
       logEntry.confidenceScore = cnnConfidence;
 
       // if confidence < threshold of 70%, reject
-      if (cnnConfidence < 0.7) {
+      if (cnnConfidence < 0.4) {
         logEntry.reason = "No constellation or low confidence: " + cnnConfidence;
         console.warn("Validation failed: Low confidence score:", cnnConfidence);
         await logValidation(logEntry);
